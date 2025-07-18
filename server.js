@@ -117,6 +117,10 @@ app.get('/asset-examples', (req, res) => {
     res.sendFile(path.join(__dirname, 'asset-usage-example.html'));
 });
 
+app.get('/testimonial_email.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'testimonial_email.html'));
+});
+
 app.get('/email-draft', (req, res) => {
     const fs = require('fs');
     const path = require('path');
