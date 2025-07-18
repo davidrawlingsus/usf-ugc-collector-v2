@@ -76,8 +76,7 @@
         }
         
         .testimonials {
-            max-height: 600px;
-            overflow-y: auto;
+            /* Removed height constraint to allow full content display */
         }
         
         .testimonial-card {
@@ -165,9 +164,10 @@
             padding: 20px;
             margin: 15px 0;
             white-space: pre-wrap;
-            min-height: 120px;
             font-size: 0.95rem;
             line-height: 1.5;
+            max-height: none;
+            overflow: visible;
         }
         
         .testimonial-text-label {
