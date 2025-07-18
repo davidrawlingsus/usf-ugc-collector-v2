@@ -89,14 +89,12 @@ const upload = multer({
     }
 });
 
-// Initialize SQLite database with persistent path and optimizations
+// Initialize SQLite database with persistent path
 const dbPath = path.join(dataDir, 'testimonials.db');
 const db = new sqlite3.Database(dbPath);
 
-// Optimize database for high volume
+// Set database timeout for high volume
 db.configure('busyTimeout', 30000);
-db.configure('journalMode', 'WAL');
-db.configure('synchronous', 'NORMAL');
 
 // Create testimonials table
 db.serialize(() => {
