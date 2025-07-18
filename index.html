@@ -3,30 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Tough Flag - Video Testimonials</title>
-    <meta http-equiv="refresh" content="0; url=video_collector.html">
+    <title>Super Tough Flag - Share Your Experience</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            color: white;
-            text-align: center;
+            padding: 20px;
         }
-        .loading {
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .flag-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+        
+        .testimonial-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .option-card {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+        
+        .option-card:hover {
+            border-color: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .option-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .option-title {
+            color: #1e3a8a;
             font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .option-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .option-features {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #059669;
+        }
+        
+        .video-option {
+            border-left: 4px solid #dc2626;
+        }
+        
+        .photo-option {
+            border-left: 4px solid #059669;
+        }
+        
+        .written-option {
+            border-left: 4px solid #1e3a8a;
         }
     </style>
 </head>
 <body>
-    <div class="loading">
-        <h1>🇺🇸 Super Tough Flag</h1>
-        <p>Redirecting to video testimonial page...</p>
-        <p><a href="video_collector.html" style="color: white; text-decoration: underline;">Click here if not redirected automatically</a></p>
+    <div class="container">
+        <div class="header">
+            <div class="flag-icon">🇺🇸</div>
+            <h1>Share Your Super Tough Flag Experience</h1>
+            <p class="subtitle">Choose how you'd like to share your testimonial</p>
+        </div>
+        
+        <div class="testimonial-options">
+            <a href="video_collector.html" class="option-card video-option">
+                <div class="option-icon">🎥</div>
+                <div class="option-title">Video Testimonial</div>
+                <div class="option-description">Record a 30-60 second video sharing your experience with your Super Tough flag.</div>
+                <div class="option-features">• Native camera integration • Mobile optimized • Perfect for detailed stories</div>
+            </a>
+            
+            <a href="photo_testimonial.html" class="option-card photo-option">
+                <div class="option-icon">📸</div>
+                <div class="option-title">Photo + Written Testimonial</div>
+                <div class="option-description">Write about your experience and optionally share a photo of your flag.</div>
+                <div class="option-features">• Photo is optional • Written testimonial required • Great for visual stories</div>
+            </a>
+            
+            <a href="written_testimonial.html" class="option-card written-option">
+                <div class="option-icon">✍️</div>
+                <div class="option-title">Written Testimonial Only</div>
+                <div class="option-description">Simply write about your Super Tough flag experience - no media required.</div>
+                <div class="option-features">• Quick and simple • No media uploads • Perfect for detailed reviews</div>
+            </a>
+        </div>
     </div>
+    
+    <script>
+        // URL parameter parsing function
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+        
+        // Add URL parameters to all links if they exist
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstName = getUrlParameter('first_name');
+            const lastName = getUrlParameter('last_name');
+            const email = getUrlParameter('email');
+            
+            if (firstName || lastName || email) {
+                const params = new URLSearchParams();
+                if (firstName) params.append('first_name', firstName);
+                if (lastName) params.append('last_name', lastName);
+                if (email) params.append('email', email);
+                
+                const queryString = params.toString();
+                
+                // Add parameters to all testimonial links
+                const links = document.querySelectorAll('.option-card');
+                links.forEach(link => {
+                    const currentHref = link.getAttribute('href');
+                    link.setAttribute('href', `${currentHref}?${queryString}`);
+                });
+            }
+        });
+    </script>
 </body>
 </html> 
