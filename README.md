@@ -1,206 +1,235 @@
-# Super Tough Flag Testimonial Collection System
+# USF UGC Collector
 
-A complete testimonial collection system with file upload, database storage, and admin dashboard.
+A testimonial collection system for USF, built with Node.js and PostgreSQL, deployed on Railway.
 
 ## Features
 
-- **Three testimonial types:**
-  - 🎥 **Video testimonials** - Record 30-60 second videos
-  - 📸 **Photo + Written testimonials** - Write with optional photo
-  - ✍️ **Written testimonials** - Text-only submissions
+- **Photo Testimonials**: Upload photos with testimonial text
+- **Written Testimonials**: Text-only testimonials
+- **Video Testimonials**: Upload video files with testimonials
+- **Admin Dashboard**: View and manage all testimonials
+- **PostgreSQL Integration**: Scalable database for high-volume usage
+- **Railway Deployment**: Production-ready deployment
+- **HEIC Support**: Automatic conversion of HEIC images to JPEG
 
-- **Mobile-optimized design** with patriotic red/blue gradient
-- **URL parameter parsing** for pre-populated form fields
-- **Native camera integration** for iPhone and Android devices
-- **File upload handling** with secure storage
-- **HEIC image support** with automatic conversion to JPEG
-- **SQLite database** for testimonial storage
-- **Admin dashboard** to view and manage submissions
-- **Real-time form validation** and error handling
+## Tech Stack
 
-## URL Parameters
+- **Backend**: Node.js, Express.js
+- **Database**: PostgreSQL (production), SQLite (development)
+- **File Upload**: Multer
+- **Image Processing**: Sharp (HEIC conversion)
+- **Deployment**: Railway
+- **Version Control**: Git
 
-The system accepts these URL parameters for pre-populating forms:
+## Quick Start
 
-- `first_name` - Customer's first name
-- `last_name` - Customer's last name  
-- `email` - Customer's email address
-- `current_flight_time` - Current flag flight duration
-- `past_flight_time` - Previous flag flight duration
-- `use_case` - How the flag is being used
-- `weather_type` - Weather conditions experienced
-- `extreme_conditions` - Extreme weather conditions
+### Prerequisites
 
-Example URL:
-```
-http://localhost:3000/?first_name=John&last_name=Doe&email=john@example.com&current_flight_time=6+months&use_case=Residential&weather_type=Sunny&extreme_conditions=High+wind
-```
+- Node.js 18+
+- npm or yarn
+- Railway account (for deployment)
 
-## Setup Instructions
+### Local Development
 
-### 1. Install Dependencies
-```bash
-npm install
-```
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd usf_ugc_collector
+   ```
 
-### 2. Start the Server
-```bash
-npm start
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Or for development with auto-restart:
-```bash
-npm run dev
-```
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-### 3. Additional Commands
-```bash
-npm run migrate    # Run media migration manually
-npm run test-media # Check media storage status
-```
+4. **Start development server**
+   ```bash
+   npm start
+   ```
 
-### 4. Access the Application
+5. **Access the application**
+   - Main app: http://localhost:8080
+   - Admin dashboard: http://localhost:8080/admin.html
 
-- **Main site:** http://localhost:3000
-- **Admin dashboard:** http://localhost:3000/admin
-- **Video testimonials:** http://localhost:3000/video_collector.html
-- **Photo testimonials:** http://localhost:3000/photo_testimonial.html
-- **Written testimonials:** http://localhost:3000/written_testimonial.html
+### Database Setup
+
+The application automatically handles database setup:
+
+- **Development**: Uses SQLite (`data/testimonials.db`)
+- **Production**: Uses PostgreSQL (configured via `DATABASE_URL`)
+
+## Deployment
+
+### Railway Deployment
+
+1. **Connect to Railway**
+   ```bash
+   railway login
+   railway link
+   ```
+
+2. **Set environment variables**
+   ```bash
+   railway variables set DATABASE_URL=your_postgresql_url
+   ```
+
+3. **Deploy**
+   ```bash
+   railway up
+   ```
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Production |
+| `PORT` | Server port (default: 8080) | No |
+| `NODE_ENV` | Environment (development/production) | No |
 
 ## API Endpoints
 
-### Submit Testimonials
-- `POST /submit-video-testimonial` - Submit video testimonials
-- `POST /submit-photo-testimonial` - Submit photo + written testimonials
-- `POST /submit-written-testimonial` - Submit written testimonials
+### Testimonials
 
-### View Data
-- `GET /api/testimonials` - Get all testimonials
+- `GET /api/testimonials` - Get all testimonials (admin)
 - `GET /api/testimonial/:uuid` - Get specific testimonial
+- `DELETE /api/testimonial/:uuid` - Delete testimonial
+- `POST /submit-photo-testimonial` - Submit photo testimonial
+- `POST /submit-written-testimonial` - Submit written testimonial
+- `POST /submit-video-testimonial` - Submit video testimonial
 
-## Database Schema
+### System
 
-The SQLite database stores testimonials with these fields:
+- `GET /api/health` - Health check
+- `GET /api/test-db` - Database connection test
+- `GET /api/test-heic` - HEIC support test
 
-- `id` - Auto-incrementing primary key
-- `uuid` - Unique identifier for each submission
-- `name` - Customer's full name
-- `email` - Customer's email address
-- `testimonial_text` - Written testimonial content
-- `media_file` - Filename of uploaded media (for URL generation)
-- `media_type` - MIME type of uploaded file
-- `media_data` - **BLOB data containing the actual media file**
-- `first_name`, `last_name` - Parsed from URL parameters
-- `current_flight_time`, `past_flight_time` - Flag usage data
-- `use_case`, `weather_type`, `extreme_conditions` - Context data
-- `testimonial_type` - 'video', 'photo', or 'written'
-- `created_at` - Timestamp of submission
+## Development Workflow
 
-## File Storage
+### Making Changes
 
-- **Media files are stored as BLOB data in the SQLite database** for maximum persistence
-- Files are renamed with timestamps and UUIDs for security
-- Supported formats: Video (mp4, mov, etc.) and Images (jpg, png, heic, heif, etc.)
-- HEIC/HEIF files are automatically converted to JPEG for web compatibility
-- Maximum file size: 500MB (optimized for Railway Pro, handles longer mobile videos)
-- **Automatic migration** of existing filesystem-stored media to database on deployment
+1. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
 
-## Mobile Device Support
+2. **Make your changes**
+   ```bash
+   # Edit files
+   git add .
+   git commit -m "Add feature description"
+   ```
 
-### iPhone (Safari)
-- File input shows: "Take Photo or Video", "Photo Library", "Browse"
-- `capture="environment"` defaults to rear camera
-- Video recording opens native camera app
+3. **Test locally**
+   ```bash
+   npm start
+   # Test your changes
+   ```
 
-### Android (Chrome)
-- File input shows: "Camera", "Gallery", "Files"
-- Same capture behavior
-- Uses device's default camera app
+4. **Deploy to staging** (optional)
+   ```bash
+   railway up
+   ```
 
-## Admin Dashboard
+5. **Merge to main**
+   ```bash
+   git checkout main
+   git merge feature/your-feature-name
+   git push origin main
+   ```
 
-The admin dashboard at `/admin` provides:
+### Database Migrations
 
-- **Statistics overview** - Total counts by testimonial type
-- **Real-time updates** - Auto-refreshes every 30 seconds
-- **Media preview** - Direct links to uploaded files
-- **Metadata display** - Shows all URL parameters and context
-- **Responsive design** - Works on desktop and mobile
+When making database changes:
 
-## Production Deployment
+1. **Create migration script**
+   ```bash
+   # Create migration file
+   touch migrate-new-feature.js
+   ```
 
-### Railway (Recommended)
-- Connect GitHub repository
-- Automatic deployment on push
-- **Persistent storage** with Railway volumes for database
-- **Media files stored in database** for deployment persistence
-- **Automatic migration** of existing media files
-- Connect GitHub repository
-- Automatic deployment on push
-- **Persistent storage** with Railway volumes for database
-- **Media files stored in database** for deployment persistence
-- **Automatic migration** of existing media files
+2. **Test migration locally**
+   ```bash
+   node migrate-new-feature.js
+   ```
 
-## Environment Variables
-
-Create a `.env` file for production:
-
-```env
-PORT=3000
-NODE_ENV=production
-```
-
-## Security Features
-
-- **File type validation** - Only allows video and image files
-- **File size limits** - 500MB maximum per file
-- **Unique filenames** - Prevents filename conflicts
-- **SQL injection protection** - Uses parameterized queries
-- **CORS enabled** - For cross-origin requests
-
-## Development
-
-### File Structure
-```
-├── server.js              # Main Express server
-├── package.json           # Dependencies and scripts
-├── railway.json           # Railway deployment config
-├── deploy.sh              # Deployment script with migration
-├── migrate-media.js       # Media migration script
-├── test-media.js          # Media testing script
-├── data/                  # Database storage directory
-├── uploads/               # Media storage directory
-├── index.html             # Main navigation page
-├── video_collector.html   # Video testimonial form
-├── photo_testimonial.html # Photo testimonial form
-├── written_testimonial.html # Written testimonial form
-├── admin.html             # Admin dashboard
-├── README.md              # This file
-└── DEPLOYMENT.md          # Deployment guide
-```
-
-### Adding New Features
-
-1. **New testimonial type:** Add form page and server route
-2. **Additional fields:** Update database schema and form handling
-3. **Custom styling:** Modify CSS in HTML files
-4. **API extensions:** Add new endpoints to server.js
+3. **Deploy with migration**
+   ```bash
+   railway up
+   ```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Port already in use:** Change PORT in .env or kill existing process
-2. **File upload fails:** Check data/ directory permissions
-3. **Database errors:** Delete data/testimonials.db to reset
-4. **Mobile camera not working:** Ensure HTTPS in production
-5. **Media not loading:** Run `npm run test-media` to check storage status
-6. **Migration errors:** Check logs for duplicate column errors (handled automatically)
+1. **Admin dashboard shows "Error loading UGC"**
+   - Check database connection
+   - Verify PostgreSQL is running
+   - Check logs for query errors
 
-### Logs
+2. **File uploads failing**
+   - Check uploads directory permissions
+   - Verify file size limits
+   - Check available disk space
 
-Check server console for detailed error messages and request logs.
+3. **HEIC images not converting**
+   - Ensure Sharp is installed
+   - Check image format support
+   - Verify conversion settings
+
+### Debugging
+
+1. **Check logs**
+   ```bash
+   railway logs
+   ```
+
+2. **Test database connection**
+   ```bash
+   curl https://your-app.railway.app/api/test-db
+   ```
+
+3. **Check health status**
+   ```bash
+   curl https://your-app.railway.app/api/health
+   ```
+
+## File Structure
+
+```
+usf_ugc_collector/
+├── server.js              # Main server file
+├── database.js            # Database abstraction layer
+├── package.json           # Dependencies and scripts
+├── railway.json           # Railway deployment config
+├── .gitignore            # Git ignore rules
+├── README.md             # This file
+├── data/                 # SQLite database (development)
+├── uploads/              # File uploads
+├── *.html               # Frontend pages
+└── migrate-*.js         # Database migration scripts
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## License
 
-MIT License - See LICENSE file for details. 
+[Add your license here]
+
+## Support
+
+For issues and questions:
+- Check the troubleshooting section
+- Review Railway logs
+- Contact the development team 
