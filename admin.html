@@ -219,6 +219,7 @@
             border-radius: 8px;
             border: 1px solid #e5e7eb;
             cursor: pointer;
+            background: #000;
         }
         
         .modal {
@@ -488,7 +489,7 @@
                             // Video preview
                             mediaHtml = `
                                 <div class="media-preview">
-                                    <video onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" controls>
+                                    <video controls preload="metadata">
                                         <source src="${mediaUrl}" type="${testimonial.media_type}">
                                         Your browser does not support the video tag.
                                     </video>
