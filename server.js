@@ -518,19 +518,42 @@ app.get('/api/testimonial/:uuid', (req, res) => {
 
 // Health check endpoint for monitoring
 app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development',
-        uploads: uploadsDir,
-        features: [
-            'HEIC support with automatic conversion',
-            'High volume optimized',
-            'Railway Pro persistent storage',
-            'Compression enabled',
-            'Media stored as BLOB in database'
-        ]
-    });
+    try {
+        // Quick database check to ensure everything is working
+        get('SELECT COUNT(*) as count FROM testimonials', [], (err, row) => {
+            if (err) {
+                console.error('Health check database error:', err);
+                res.status(503).json({
+                    status: 'unhealthy',
+                    error: 'Database connection failed',
+                    timestamp: new Date().toISOString()
+                });
+            } else {
+                res.json({
+                    status: 'healthy',
+                    timestamp: new Date().toISOString(),
+                    environment: process.env.NODE_ENV || 'development',
+                    uploads: uploadsDir,
+                    database: 'connected',
+                    testimonialCount: row ? row.count : 0,
+                    features: [
+                        'HEIC support with automatic conversion',
+                        'High volume optimized',
+                        'Railway Pro persistent storage',
+                        'Compression enabled',
+                        'Media stored as BLOB in database'
+                    ]
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Health check error:', error);
+        res.status(503).json({
+            status: 'unhealthy',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
 });
 
 // Test database endpoint
@@ -590,6 +613,17 @@ app.use((error, req, res, next) => {
         success: false,
         message: error.message || 'Internal server error'
     });
+});
+
+// Add global error handlers to prevent crashes
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    // Don't exit immediately, let the process continue
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Don't exit immediately, let the process continue
 });
 
 app.listen(PORT, () => {
