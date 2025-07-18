@@ -109,6 +109,10 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+app.get('/admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 app.get('/assets', (req, res) => {
     res.sendFile(path.join(__dirname, 'assets.html'));
 });
