@@ -117,6 +117,36 @@ app.get('/asset-examples', (req, res) => {
     res.sendFile(path.join(__dirname, 'asset-usage-example.html'));
 });
 
+app.get('/email-draft', (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    
+    try {
+        const filePath = path.join(__dirname, 'email_draft.html');
+        const content = fs.readFileSync(filePath, 'utf8');
+        res.setHeader('Content-Type', 'text/html');
+        res.send(content);
+    } catch (error) {
+        console.error('Error reading email draft:', error);
+        res.status(500).send('Error loading email template');
+    }
+});
+
+app.get('/test-email', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Test Email</title>
+        </head>
+        <body>
+            <h1>Test Email Template</h1>
+            <p>This is a test to see if the route is working.</p>
+        </body>
+        </html>
+    `);
+});
+
 // Serve media files from database
 app.get('/uploads/:filename', (req, res) => {
     const filename = req.params.filename;
