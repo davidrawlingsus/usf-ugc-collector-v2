@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Tough Flag - Share Your Experience</title>
+    <title>Super Tough Flag - UGC & Feedback Strategy Overview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Spectral:ital,opsz,wght@0,7.5..10,200..900;1,7.5..10,200..900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,175 +15,457 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             min-height: 100vh;
-            padding: 20px;
         }
         
         .container {
-            max-width: 500px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px 20px;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 50px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
-        .flag-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
         }
         
         h1 {
+            font-family: 'Spectral', serif;
             color: #1e3a8a;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
         }
         
         .subtitle {
             color: #6b7280;
-            font-size: 0.9rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
         }
         
-        .testimonial-options {
+        .strategy-overview {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .strategy-overview h2 {
+            font-family: 'Spectral', serif;
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .strategy-overview p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        
+        .strategy-image {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .strategy-overview {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        
+        .strategy-content {
+            flex: 1;
+        }
+        
+        .strategy-image-container {
+            flex-shrink: 0;
+        }
+        
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .component-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .component-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .component-card h3 {
+            font-family: 'Spectral', serif;
+            color: #1e3a8a;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .component-card p {
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .component-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .component-link {
+            display: inline-block;
+            background: #162d59;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        
+        .component-link:hover {
+            background: #1e3a8a;
+        }
+        
+        .component-link.secondary {
+            background: #6b7280;
+        }
+        
+        .component-link.secondary:hover {
+            background: #4b5563;
+        }
+        
+        .metrics-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .metrics-section h2 {
+            font-family: 'Spectral', serif;
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .metric-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #1e3a8a;
+        }
+        
+        .metric-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .workflow-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .workflow-section h2 {
+            font-family: 'Spectral', serif;
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .workflow-steps {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
         
-        .option-card {
+        .workflow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
             background: #f8fafc;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 25px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s;
+            border-radius: 10px;
+            border-left: 4px solid #10b981;
         }
         
-        .option-card:hover {
-            border-color: #1e3a8a;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .step-number {
+            background: #10b981;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
         }
         
-        .option-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        
-        .option-title {
+        .step-content h4 {
             color: #1e3a8a;
-            font-size: 1.2rem;
-            font-weight: 600;
             margin-bottom: 8px;
+            font-weight: 600;
         }
         
-        .option-description {
+        .step-content p {
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+        
+        .footer {
+            text-align: center;
             color: #6b7280;
             font-size: 0.9rem;
-            line-height: 1.4;
+            margin-top: 40px;
         }
         
-        .option-features {
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: #059669;
-        }
-        
-        .video-option {
-            border-left: 4px solid #dc2626;
-        }
-        
-        .photo-option {
-            border-left: 4px solid #059669;
-        }
-        
-        .written-option {
-            border-left: 4px solid #1e3a8a;
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .strategy-overview {
+                flex-direction: column;
+            }
+            
+            .strategy-image {
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            .header .strategy-image {
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="flag-icon">🇺🇸</div>
-            <h1>Share Your Super Tough Flag Experience</h1>
-            <p class="subtitle">Choose how you'd like to share your testimonial</p>
+            <img src="https://usf-testimonial-collector-production.up.railway.app/assets/48f47d55-65ce-4116-9b32-5c0068a377c1" alt="Super Tough Flag Logo" class="logo">
+            <h1>UGC & Feedback Strategy Overview</h1>
+            <p class="subtitle">Complete system for collecting customer testimonials, feedback, and user-generated content</p>
+            <img src="https://usf-testimonial-collector-production.up.railway.app/assets/4b3d7a73-c188-4c5c-aa14-8eee8e4a17ba" alt="Strategy Overview" class="strategy-image" style="display: none; margin-top: 20px;">
         </div>
         
-        <div class="testimonial-options">
-            <a href="video_collector.html" class="option-card video-option">
-                <div class="option-icon">🎥</div>
-                <div class="option-title">Video Testimonial</div>
-                <div class="option-description">Record a 30-60 second video sharing your experience with your Super Tough flag.</div>
-                <div class="option-features">• Native camera integration • Mobile optimized • Perfect for detailed stories</div>
-            </a>
+        <div class="strategy-overview">
+            <div class="strategy-content">
+                <h2>🎯 Strategy Overview</h2>
+                <p>Our comprehensive UGC and feedback strategy is designed to collect authentic customer testimonials while gathering valuable product insights. The system includes multiple touchpoints to engage customers at different stages of their journey.</p>
+                <p><strong>Primary Goal:</strong> Collect video and photo testimonials for marketing while gathering product feedback for improvement.</p>
+                <p><strong>Key Incentive:</strong> Lifetime supply of Super Tough flags (2 flags per year, forever) for testimonial contributors.</p>
+            </div>
+            <div class="strategy-image-container">
+                <img src="https://usf-testimonial-collector-production.up.railway.app/assets/4b3d7a73-c188-4c5c-aa14-8eee8e4a17ba" alt="Strategy Overview" class="strategy-image">
+            </div>
+        </div>
+        
+        <div class="components-grid">
+            <div class="component-card">
+                <span class="component-icon">📧</span>
+                <h3>Email Campaigns</h3>
+                <p>Two targeted email templates designed to drive different types of engagement:</p>
+                <div class="component-links">
+                    <a href="email_draft.html" class="component-link" target="_blank">Survey Email</a>
+                    <a href="testimonial_email.html" class="component-link" target="_blank">Testimonial Email</a>
+                </div>
+                <p><strong>Survey Email:</strong> Comprehensive feedback collection with Typeform integration</p>
+                <p><strong>Testimonial Email:</strong> Direct CTA for video/photo testimonials with lifetime flag giveaway</p>
+            </div>
             
-            <a href="photo_testimonial.html" class="option-card photo-option">
-                <div class="option-icon">📸</div>
-                <div class="option-title">Photo + Written Testimonial</div>
-                <div class="option-description">Write about your experience and optionally share a photo of your flag.</div>
-                <div class="option-features">• Photo is optional • Written testimonial required • Great for visual stories</div>
-            </a>
+            <div class="component-card">
+                <span class="component-icon">🎬</span>
+                <h3>Testimonial Collectors</h3>
+                <p>Dedicated forms for collecting video and photo testimonials with seamless UX:</p>
+                <div class="component-links">
+                    <a href="video_collector.html" class="component-link" target="_blank">Video Collector</a>
+                    <a href="photo_testimonial.html" class="component-link" target="_blank">Photo Testimonial</a>
+                </div>
+                <p><strong>Features:</strong> Front camera activation, file upload, URL parameter support, mobile-optimized</p>
+                <p><strong>UX:</strong> Progressive disclosure - submit button appears only after file selection</p>
+            </div>
             
-            <a href="written_testimonial.html" class="option-card written-option">
-                <div class="option-icon">✍️</div>
-                <div class="option-title">Written Testimonial Only</div>
-                <div class="option-description">Simply write about your Super Tough flag experience - no media required.</div>
-                <div class="option-features">• Quick and simple • No media uploads • Perfect for detailed reviews</div>
-            </a>
+            <div class="component-card">
+                <span class="component-icon">📊</span>
+                <h3>Survey & Analytics</h3>
+                <p>Comprehensive feedback collection and data management:</p>
+                <div class="component-links">
+                    <a href="https://form.typeform.com/to/p8Y3kpxF" class="component-link" target="_blank">Customer Survey</a>
+                    <a href="admin.html" class="component-link secondary" target="_blank">Admin Dashboard</a>
+                </div>
+                <p><strong>Survey:</strong> Typeform integration with merge fields for personalized experience</p>
+                <p><strong>Dashboard:</strong> Real-time submission tracking, file management, and analytics</p>
+            </div>
+            
+                         <div class="component-card" style="grid-column: 1 / -1;">
+                 <span class="component-icon">🏆</span>
+                 <h3>Incentive Structure</h3>
+                 <p>Multi-tier reward system to maximize participation:</p>
+                 <p><strong>Grand Prize:</strong> Super Tough flag every 6 months for LIFE</p>
+                 <p><strong>Survey Prizes:</strong> $1,000 Amazon gift card entries</p>
+                 <p><strong>Universal:</strong> Helping fellow Americans choose quality flags</p>
+             </div>
+        </div>
+        
+        <div class="workflow-section">
+            <h2>🔄 Customer Journey Workflow</h2>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Email Outreach</h4>
+                        <p>Customers receive personalized email based on purchase timing and preferences. Two email types: survey-focused and testimonial-focused.</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Engagement Choice</h4>
+                        <p>Customers choose their preferred engagement method: comprehensive survey, video testimonial, or photo testimonial.</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Content Creation</h4>
+                        <p>Seamless collection process with mobile-optimized forms, front camera activation, and progressive disclosure UX.</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Data Collection</h4>
+                        <p>All submissions are captured in real-time dashboard with file management, analytics, and export capabilities.</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Prize Distribution</h4>
+                        <p>Winners selected and notified within 30 days. Lifetime flag supply for testimonial contributors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <div class="footer">
+            <p>Super Tough Flag UGC & Feedback System | United-States-Flag.com</p>
+            <p>Last updated: <span id="currentDate"></span></p>
         </div>
     </div>
     
     <script>
-        // URL parameter parsing function
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+        
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Handle responsive image display
+        function handleImageDisplay() {
+            const headerImage = document.querySelector('.header .strategy-image');
+            const strategyImage = document.querySelector('.strategy-overview .strategy-image');
+            
+            if (window.innerWidth <= 768) {
+                // Mobile: show in header, hide in strategy
+                headerImage.style.display = 'block';
+                strategyImage.style.display = 'none';
+            } else {
+                // Desktop: hide in header, show in strategy
+                headerImage.style.display = 'none';
+                strategyImage.style.display = 'block';
+            }
         }
         
-        // Add URL parameters to all links if they exist
-        document.addEventListener('DOMContentLoaded', function() {
-            const firstName = getUrlParameter('first_name');
-            const lastName = getUrlParameter('last_name');
-            const email = getUrlParameter('email');
-            const currentFlightTime = getUrlParameter('current_flight_time');
-            const pastFlightTime = getUrlParameter('past_flight_time');
-            const useCase = getUrlParameter('use_case');
-            const weatherType = getUrlParameter('weather_type');
-            const extremeConditions = getUrlParameter('extreme_conditions');
-            
-            if (firstName || lastName || email || currentFlightTime || pastFlightTime || useCase || weatherType || extremeConditions) {
-                const params = new URLSearchParams();
-                if (firstName) params.append('first_name', firstName);
-                if (lastName) params.append('last_name', lastName);
-                if (email) params.append('email', email);
-                if (currentFlightTime) params.append('current_flight_time', currentFlightTime);
-                if (pastFlightTime) params.append('past_flight_time', pastFlightTime);
-                if (useCase) params.append('use_case', useCase);
-                if (weatherType) params.append('weather_type', weatherType);
-                if (extremeConditions) params.append('extreme_conditions', extremeConditions);
-                
-                const queryString = params.toString();
-                
-                // Add parameters to all testimonial links
-                const links = document.querySelectorAll('.option-card');
-                links.forEach(link => {
-                    const currentHref = link.getAttribute('href');
-                    link.setAttribute('href', `${currentHref}?${queryString}`);
-                });
-            }
-        });
+        // Initial call and resize listener
+        handleImageDisplay();
+        window.addEventListener('resize', handleImageDisplay);
     </script>
 </body>
 </html> 
