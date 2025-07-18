@@ -494,7 +494,14 @@
                             // Image preview (including HEIC)
                             mediaHtml = `
                                 <div class="media-preview">
-                                    <img src="${mediaUrl}" alt="Testimonial photo" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" />
+                                    <img src="${mediaUrl}" alt="Testimonial photo" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                                    <div class="video-fallback" style="display: none;" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
+                                        <div>
+                                            <div style="font-size: 2rem; margin-bottom: 10px;">📷</div>
+                                            <div>Image File: ${testimonial.media_file}</div>
+                                            <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">File may have been lost during deployment</div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <a href="${mediaUrl}" target="_blank" class="media-link">
                                     📎 Download Photo

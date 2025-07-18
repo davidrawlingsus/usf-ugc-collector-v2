@@ -21,6 +21,11 @@ const persistentDir = process.env.RAILWAY_VOLUME_MOUNT_PATH ? '/app' : './';
 const dataDir = path.join(persistentDir, 'data');
 const uploadsDir = path.join(persistentDir, 'uploads');
 
+// Log the paths being used for debugging
+console.log('Persistent directory:', persistentDir);
+console.log('Data directory:', dataDir);
+console.log('Uploads directory:', uploadsDir);
+
 // Create directories if they don't exist
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
