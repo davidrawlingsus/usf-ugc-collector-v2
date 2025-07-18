@@ -228,6 +228,70 @@
             font-size: 0.9rem;
         }
         
+        .how-it-works {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .how-it-works-content {
+            flex: 1;
+        }
+        
+        .how-it-works h3 {
+            color: #047857;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+        }
+        
+        .step-number {
+            background: #10b981;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            color: #065f46;
+            flex: 1;
+        }
+        
+        .how-it-works-image {
+            flex-shrink: 0;
+            width: 150px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .how-it-works-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
         /* Merge Fields Demo Styles */
         .merge-fields-demo {
             max-width: 600px;
@@ -340,6 +404,17 @@
             .prize-icon {
                 margin-bottom: 8px;
             }
+            
+            .how-it-works {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .how-it-works-image {
+                width: 100%;
+                max-width: 250px;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -392,12 +467,6 @@
                 We're passionate about making the highest quality American flags, and your real-world experience helps us continue improving and helps fellow Americans choose flags they can count on.
             </div>
             
-            <div class="cta-section">
-                <h3 style="color: #1e3a8a; margin-bottom: 15px;">Share Your Experience</h3>
-                <p style="margin-bottom: 15px; color: #4a5568;">Take our quick 2-minute survey about your flag's performance</p>
-                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta1">Start Survey</a>
-            </div>
-            
             <div class="prizes-section">
                 <div class="prizes-title">🎁 Thank You Prizes</div>
                 
@@ -423,27 +492,61 @@
                 </div>
             </div>
             
+            <div class="how-it-works">
+                <div class="how-it-works-content">
+                    <h3>How It Works</h3>
+                    
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Click the button below to access our survey</div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Answer questions about your flag's performance (2 minutes)</div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Optionally record a video testimonial for extra prizes</div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Winners will be notified by email within 30 days</div>
+                    </div>
+                </div>
+                
+                <div class="how-it-works-image">
+                    <img src="https://usf-testimonial-collector-production.up.railway.app/assets/4b3d7a73-c188-4c5c-aa14-8eee8e4a17ba" alt="How It Works Illustration">
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px;">Ready to Share Your Experience?</h3>
+                <p style="margin-bottom: 15px; color: #4a5568;">It only takes 2 minutes to complete the survey and enter the giveaway</p>
+                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta1">Yes, I'll Take the Survey!</a>
+                <br>
+                <a href="https://usf-testimonial-collector-production.up.railway.app/video_collector.html?first_name={{first_name}}&last_name={{last_name}}&email={{email}}" style="color: #1e3a8a; text-decoration: underline; font-size: 14px; margin-top: 10px; display: inline-block;" id="cta2">I prefer to record a video testimonial</a>
+            </div>
+            
             <div class="time-sensitive">
                 <div class="time-sensitive-text">⏰ Survey closes in 7 days</div>
                 <div class="time-sensitive-sub">Don't miss your chance to win!</div>
             </div>
             
-            <div class="main-text">
-                Whether your flag exceeded expectations or needs improvement, we want to hear from you. Your honest feedback drives everything we do.
-            </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta2">Take the 2-Minute Survey</a>
-            </div>
-            
             <div class="main-text" style="margin-top: 30px;">
-                Thanks for choosing Super Tough flags and for flying the stars and stripes with pride!
+                Whether your flag exceeded expectations or needs improvement, we want to hear from you. Your honest feedback drives everything we do and helps fellow Americans choose quality flags they can count on.
             </div>
             
             <div style="margin-top: 25px; color: #4a5568;">
                 Best regards,<br>
                 <strong>The Super Tough Flag Team</strong><br>
                 United-States-Flag.com
+            </div>
+            
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.9rem;">
+                <strong>P.S.</strong> If you have different feedback about your Super Tough flag experience, please reply to this email and let us know. We value all customer feedback and want to hear from you!
             </div>
         </div>
         
