@@ -1,0 +1,204 @@
+/* Common styles for Super Tough Flag testimonial pages */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #162D59 0%, #8B2323 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.flag-icon {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.flag-icon img {
+    width: 80px;
+    height: auto;
+    max-width: 100%;
+}
+
+h1 {
+    color: #1e3a8a;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+    outline: none;
+    border-color: #1e3a8a;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.submit-btn {
+    width: 100%;
+    background: #dc2626;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background: #b91c1c;
+}
+
+.submit-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.prompts {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.prompts h3 {
+    color: #92400e;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.prompts ul {
+    color: #78350f;
+    font-size: 0.9rem;
+    padding-left: 20px;
+}
+
+.prompts li {
+    margin-bottom: 5px;
+}
+
+/* Upload section styles */
+.upload-section {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.upload-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.upload-btn {
+    background: #1e3a8a;
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn:hover {
+    background: #1e40af;
+}
+
+.upload-btn.photo {
+    background: #059669;
+}
+
+.upload-btn.photo:hover {
+    background: #047857;
+}
+
+.file-input {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+}
+
+.file-preview {
+    margin-top: 15px;
+    padding: 10px;
+    background: #ecfdf5;
+    border-radius: 8px;
+    display: none;
+}
+
+/* Additional note styles */
+.simple-note {
+    background: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+    color: #0c4a6e;
+}
+
+.optional-note {
+    background: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+    color: #0c4a6e;
+} 

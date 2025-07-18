@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Share Your Super Tough Flag Experience</title>
+    <link rel="icon" type="image/png" href="https://usf-testimonial-collector-production.up.railway.app/assets/ed2ce4f3-bfcb-4739-9cb5-ef29e9384297">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Spectral:ital,opsz,wght@0,7.5..10,200..900;1,7.5..10,200..900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,7 +17,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #162D59 0%, #8B2323 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -33,19 +37,34 @@
         }
         
         .flag-icon {
-            font-size: 3rem;
             margin-bottom: 15px;
+            text-align: center;
         }
         
-        h1 {
+        .flag-icon img {
+            width: 80px;
+            height: auto;
+            max-width: 100%;
+        }
+        
+        h1, h2 {
+            font-family: 'Spectral', serif;
             color: #1e3a8a;
             font-size: 1.5rem;
             margin-bottom: 10px;
         }
         
+        h2 {
+            font-size: 1.3rem;
+        }
+        
         .subtitle {
             color: #6b7280;
             font-size: 0.9rem;
+        }
+        
+        p {
+            font-family: 'DM Sans', sans-serif;
         }
         
         .form-group {
@@ -128,19 +147,20 @@
         
         .submit-btn {
             width: 100%;
-            background: #dc2626;
+            background: #162d59;
             color: white;
             padding: 15px;
             border: none;
             border-radius: 8px;
             font-size: 18px;
-            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         
         .submit-btn:hover {
-            background: #b91c1c;
+            background: #1e3a8a;
         }
         
         .submit-btn:disabled {
@@ -186,7 +206,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="flag-icon">🇺🇸</div>
+            <div class="flag-icon">
+                <img src="https://usf-testimonial-collector-production.up.railway.app/assets/48f47d55-65ce-4116-9b32-5c0068a377c1" alt="Super Tough Flag Logo">
+            </div>
             <h1>Share Your Photo Testimonial</h1>
             <p class="subtitle">Write about your Super Tough flag experience and share a photo</p>
         </div>
@@ -208,12 +230,8 @@
             </div>
             
             <div class="upload-section">
-                <h3>📸 Share a Photo (Optional)</h3>
+                <h3>📸 Share a Photo</h3>
                 <p>Upload a photo of your flag or your experience</p>
-                
-                <div class="optional-note">
-                    💡 Photo is optional - you can submit without one
-                </div>
                 
                 <div class="upload-buttons">
                     <button type="button" class="upload-btn" onclick="document.getElementById('photoInput').click()">
@@ -239,7 +257,7 @@
                 </ul>
             </div>
             
-            <button type="submit" class="submit-btn" id="submitBtn">
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
                 📤 Submit My Photo Testimonial
             </button>
         </form>
@@ -299,9 +317,14 @@
                     selectedFile = file;
                     const preview = document.getElementById('filePreview');
                     const fileName = document.getElementById('fileName');
+                    const submitBtn = document.getElementById('submitBtn');
                     
                     fileName.textContent = `${type} selected: ${file.name}`;
                     preview.style.display = 'block';
+                    
+                    // Enable submit button when photo is attached
+                    submitBtn.disabled = false;
+                    submitBtn.style.background = '#162d59';
                 }
             });
         }
@@ -351,7 +374,7 @@
                     this.reset();
                     selectedFile = null;
                     document.getElementById('filePreview').style.display = 'none';
-                    submitBtn.disabled = false;
+                    submitBtn.disabled = true;
                     submitBtn.textContent = 'Submit My Photo Testimonial';
                 } else {
                     throw new Error(data.message || 'Submission failed');
@@ -360,7 +383,7 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Sorry, there was an error submitting your testimonial. Please try again.');
-                submitBtn.disabled = false;
+                submitBtn.disabled = true;
                 submitBtn.textContent = 'Submit My Photo Testimonial';
             });
         });
