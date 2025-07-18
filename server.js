@@ -13,18 +13,24 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Use persistent storage paths
+// Add compression for better performance
+const compression = require('compression');
+app.use(compression());
+
+// Use persistent storage paths for Railway Pro
 const persistentDir = process.env.RAILWAY_VOLUME_MOUNT_PATH ? '/app' : './';
 const dataDir = path.join(persistentDir, 'data');
 const uploadsDir = path.join(persistentDir, 'uploads');
 
 // Log the paths being used for debugging
+console.log('🚀 Railway Pro Configuration:');
 console.log('Persistent directory:', persistentDir);
 console.log('Data directory:', dataDir);
 console.log('Uploads directory:', uploadsDir);
+console.log('Environment:', process.env.NODE_ENV || 'development');
 
 // Create directories if they don't exist
 if (!fs.existsSync(dataDir)) {
@@ -67,7 +73,8 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage: storage,
     limits: {
-        fileSize: 50 * 1024 * 1024 // 50MB limit
+        fileSize: 100 * 1024 * 1024, // 100MB limit for Railway Pro
+        files: 1 // Single file uploads
     },
     fileFilter: function (req, file, cb) {
         // Allow videos and images (including HEIC)
@@ -82,9 +89,14 @@ const upload = multer({
     }
 });
 
-// Initialize SQLite database with persistent path
+// Initialize SQLite database with persistent path and optimizations
 const dbPath = path.join(dataDir, 'testimonials.db');
 const db = new sqlite3.Database(dbPath);
+
+// Optimize database for high volume
+db.configure('busyTimeout', 30000);
+db.configure('journalMode', 'WAL');
+db.configure('synchronous', 'NORMAL');
 
 // Create testimonials table
 db.serialize(() => {
@@ -322,6 +334,23 @@ app.get('/api/testimonial/:uuid', (req, res) => {
     });
 });
 
+// Health check endpoint for monitoring
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
+        database: dbPath,
+        uploads: uploadsDir,
+        features: [
+            'HEIC support with automatic conversion',
+            'High volume optimized',
+            'Railway Pro persistent storage',
+            'Compression enabled'
+        ]
+    });
+});
+
 // Test endpoint for HEIC conversion
 app.get('/api/test-heic', (req, res) => {
     res.json({
@@ -387,6 +416,10 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Visit http://localhost:${PORT} to view the testimonial forms`);
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`💾 Database: ${dbPath}`);
+    console.log(`📁 Uploads: ${uploadsDir}`);
+    console.log(`🌐 Visit http://localhost:${PORT} to view the testimonial forms`);
+    console.log(`⚡ Optimized for high volume with Railway Pro`);
 }); 
