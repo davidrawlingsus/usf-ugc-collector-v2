@@ -177,6 +177,51 @@
             border-radius: 8px;
             margin: 20px 0;
         }
+        
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+        
+        .testimonial-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .success-message {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -209,6 +254,8 @@
         <div class="testimonials" id="testimonials">
             <div class="loading">Loading testimonials...</div>
         </div>
+        
+        <div class="success-message" id="successMessage"></div>
     </div>
     
     <script>
@@ -241,6 +288,7 @@
                 testimonials.forEach(testimonial => {
                     const card = document.createElement('div');
                     card.className = 'testimonial-card';
+                    card.id = `testimonial-${testimonial.uuid}`;
                     
                     const typeClass = `type-${testimonial.testimonial_type}`;
                     const typeLabel = testimonial.testimonial_type.charAt(0).toUpperCase() + testimonial.testimonial_type.slice(1);
@@ -281,6 +329,11 @@
                         ${testimonial.testimonial_text ? `<div class="testimonial-text">${testimonial.testimonial_text}</div>` : ''}
                         ${mediaHtml}
                         ${metaHtml}
+                        <div class="testimonial-actions">
+                            <button class="delete-btn" onclick="deleteTestimonial('${testimonial.uuid}', '${testimonial.name}')">
+                                🗑️ Delete Testimonial
+                            </button>
+                        </div>
                     `;
                     
                     testimonialsContainer.appendChild(card);
@@ -293,6 +346,54 @@
                         Error loading testimonials. Please check the server connection.
                     </div>
                 `;
+            }
+        }
+        
+        // Delete testimonial function
+        async function deleteTestimonial(uuid, name) {
+            if (!confirm(`Are you sure you want to delete the testimonial from ${name}? This action cannot be undone.`)) {
+                return;
+            }
+            
+            const deleteBtn = document.querySelector(`#testimonial-${uuid} .delete-btn`);
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '<span class="loading-spinner"></span> Deleting...';
+            deleteBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/testimonial/${uuid}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Remove the testimonial card from the DOM
+                    const testimonialCard = document.getElementById(`testimonial-${uuid}`);
+                    testimonialCard.remove();
+                    
+                    // Show success message
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.textContent = `Testimonial from ${name} deleted successfully.`;
+                    successMessage.style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                    
+                    // Reload testimonials to update stats
+                    loadTestimonials();
+                } else {
+                    throw new Error(result.message || 'Failed to delete testimonial');
+                }
+            } catch (error) {
+                console.error('Error deleting testimonial:', error);
+                alert(`Error deleting testimonial: ${error.message}`);
+                
+                // Reset button
+                deleteBtn.innerHTML = originalText;
+                deleteBtn.disabled = false;
             }
         }
         

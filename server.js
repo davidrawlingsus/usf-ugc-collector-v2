@@ -270,6 +270,48 @@ app.get('/api/testimonial/:uuid', (req, res) => {
     });
 });
 
+// Delete testimonial by UUID
+app.delete('/api/testimonial/:uuid', (req, res) => {
+    const { uuid } = req.params;
+    
+    // First get the testimonial to find associated media file
+    db.get('SELECT * FROM testimonials WHERE uuid = ?', [uuid], (err, testimonial) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        if (!testimonial) {
+            res.status(404).json({ error: 'Testimonial not found' });
+            return;
+        }
+        
+        // Delete the testimonial from database
+        db.run('DELETE FROM testimonials WHERE uuid = ?', [uuid], function(err) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            
+            // Delete associated media file if it exists
+            if (testimonial.media_file) {
+                const filePath = path.join(__dirname, 'uploads', testimonial.media_file);
+                fs.unlink(filePath, (err) => {
+                    // Don't fail if file deletion fails (file might not exist)
+                    if (err) {
+                        console.log('Warning: Could not delete media file:', err.message);
+                    }
+                });
+            }
+            
+            res.json({
+                success: true,
+                message: 'Testimonial deleted successfully',
+                deletedId: testimonial.id
+            });
+        });
+    });
+});
+
 // Error handling middleware
 app.use((error, req, res, next) => {
     console.error('Error:', error);
