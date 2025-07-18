@@ -13,18 +13,25 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'uploads');
+// Use persistent storage paths
+const dataDir = process.env.RAILWAY_VOLUME_MOUNT_PATH ? '/app/data' : './data';
+const uploadsDir = process.env.RAILWAY_VOLWAY_MOUNT_PATH ? '/app/uploads' : './uploads';
+
+// Create directories if they don't exist
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+app.use('/uploads', express.static(uploadsDir));
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        cb(null, uploadsDir);
     },
     filename: function (req, file, cb) {
         const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.originalname)}`;
@@ -47,8 +54,9 @@ const upload = multer({
     }
 });
 
-// Initialize SQLite database
-const db = new sqlite3.Database('testimonials.db');
+// Initialize SQLite database with persistent path
+const dbPath = path.join(dataDir, 'testimonials.db');
+const db = new sqlite3.Database(dbPath);
 
 // Create testimonials table
 db.serialize(() => {
@@ -294,7 +302,7 @@ app.delete('/api/testimonial/:uuid', (req, res) => {
             
             // Delete associated media file if it exists
             if (testimonial.media_file) {
-                const filePath = path.join(__dirname, 'uploads', testimonial.media_file);
+                const filePath = path.join(uploadsDir, testimonial.media_file);
                 fs.unlink(filePath, (err) => {
                     // Don't fail if file deletion fails (file might not exist)
                     if (err) {
