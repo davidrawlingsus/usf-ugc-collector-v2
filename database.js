@@ -95,6 +95,21 @@ function initializeSQLite() {
             }
         });
         
+        // Create assets table for frontend interface assets
+        db.run(`CREATE TABLE IF NOT EXISTS assets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uuid TEXT UNIQUE,
+            name TEXT NOT NULL,
+            description TEXT,
+            asset_type TEXT NOT NULL,
+            file_name TEXT NOT NULL,
+            mime_type TEXT NOT NULL,
+            file_data BLOB NOT NULL,
+            file_size INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`);
+        
         dbReady = true;
         console.log('✅ SQLite database ready');
     });
@@ -126,15 +141,41 @@ function initializePostgres(pool) {
         )
     `;
     
+    // Create assets table for frontend interface assets
+    const createAssetsTableQuery = `
+        CREATE TABLE IF NOT EXISTS assets (
+            id SERIAL PRIMARY KEY,
+            uuid TEXT UNIQUE,
+            name TEXT NOT NULL,
+            description TEXT,
+            asset_type TEXT NOT NULL,
+            file_name TEXT NOT NULL,
+            mime_type TEXT NOT NULL,
+            file_data BYTEA NOT NULL,
+            file_size INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    `;
+    
     pool.query(createTableQuery, (err) => {
         if (err) {
-            console.error('Error creating PostgreSQL table:', err);
+            console.error('Error creating PostgreSQL testimonials table:', err);
         } else {
-            console.log('✅ PostgreSQL table created/verified');
+            console.log('✅ PostgreSQL testimonials table created/verified');
         }
-        dbReady = true;
-        console.log('✅ PostgreSQL database ready');
     });
+    
+    pool.query(createAssetsTableQuery, (err) => {
+        if (err) {
+            console.error('Error creating PostgreSQL assets table:', err);
+        } else {
+            console.log('✅ PostgreSQL assets table created/verified');
+        }
+    });
+    
+    dbReady = true;
+    console.log('✅ PostgreSQL database ready');
 }
 
 // Database operation wrappers

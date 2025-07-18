@@ -109,6 +109,14 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+app.get('/assets', (req, res) => {
+    res.sendFile(path.join(__dirname, 'assets.html'));
+});
+
+app.get('/asset-examples', (req, res) => {
+    res.sendFile(path.join(__dirname, 'asset-usage-example.html'));
+});
+
 // Serve media files from database
 app.get('/uploads/:filename', (req, res) => {
     const filename = req.params.filename;
@@ -130,6 +138,150 @@ app.get('/uploads/:filename', (req, res) => {
         
         // Send the binary data
         res.send(row.media_data);
+    });
+});
+
+// Serve assets from database
+app.get('/assets/:uuid', (req, res) => {
+    const uuid = req.params.uuid;
+    
+    get('SELECT file_data, mime_type, file_name FROM assets WHERE uuid = ?', [uuid], (err, row) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).send('Database error');
+        }
+        
+        if (!row || !row.file_data) {
+            return res.status(404).send('Asset not found');
+        }
+        
+        // Set appropriate headers
+        res.setHeader('Content-Type', row.mime_type);
+        res.setHeader('Content-Length', row.file_data.length);
+        res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+        res.setHeader('Content-Disposition', `inline; filename="${row.file_name}"`);
+        
+        // Send the binary data
+        res.send(row.file_data);
+    });
+});
+
+// Upload asset endpoint
+app.post('/api/assets/upload', upload.single('asset'), async (req, res) => {
+    try {
+        const { name, description, asset_type } = req.body;
+        
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No file uploaded'
+            });
+        }
+        
+        const uuid = uuidv4();
+        const fileSize = req.file.buffer.length;
+        
+        const stmt = prepare(`
+            INSERT INTO assets (
+                uuid, name, description, asset_type, file_name, mime_type, file_data, file_size
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        
+        stmt.run([
+            uuid, name, description, asset_type, req.file.originalname, 
+            req.file.mimetype, req.file.buffer, fileSize
+        ], (err) => {
+            if (err) {
+                console.error('Error inserting asset:', err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error uploading asset'
+                });
+            }
+            
+            res.json({
+                success: true,
+                message: 'Asset uploaded successfully!',
+                uuid: uuid,
+                name: name,
+                asset_type: asset_type,
+                file_size: fileSize
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error uploading asset:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error uploading asset'
+        });
+    }
+});
+
+// Get all assets
+app.get('/api/assets', (req, res) => {
+    all('SELECT id, uuid, name, description, asset_type, file_name, mime_type, file_size, created_at, updated_at FROM assets ORDER BY created_at DESC', [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching assets:', err);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json(rows || []);
+    });
+});
+
+// Get asset by UUID
+app.get('/api/assets/:uuid', (req, res) => {
+    const { uuid } = req.params;
+    get('SELECT id, uuid, name, description, asset_type, file_name, mime_type, file_size, created_at, updated_at FROM assets WHERE uuid = ?', [uuid], (err, row) => {
+        if (err) {
+            console.error('Error fetching asset:', err);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Asset not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+// Update asset metadata
+app.put('/api/assets/:uuid', (req, res) => {
+    const { uuid } = req.params;
+    const { name, description, asset_type } = req.body;
+    
+    run('UPDATE assets SET name = ?, description = ?, asset_type = ?, updated_at = CURRENT_TIMESTAMP WHERE uuid = ?', 
+        [name, description, asset_type, uuid], function(err) {
+        if (err) {
+            console.error('Error updating asset:', err);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        
+        res.json({
+            success: true,
+            message: 'Asset updated successfully'
+        });
+    });
+});
+
+// Delete asset
+app.delete('/api/assets/:uuid', (req, res) => {
+    const { uuid } = req.params;
+    
+    run('DELETE FROM assets WHERE uuid = ?', [uuid], function(err) {
+        if (err) {
+            console.error('Error deleting asset:', err);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        
+        res.json({
+            success: true,
+            message: 'Asset deleted successfully'
+        });
     });
 });
 
