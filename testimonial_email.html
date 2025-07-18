@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Love Your Super Tough Flag?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Spectral:ital,opsz,wght@0,7.5..10,200..900;1,7.5..10,200..900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #162D59 0%, #8B2323 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+        
+        .logo-container {
+            background: white;
+            padding: 15px;
+            margin-bottom: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .flag-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .flag-icon img {
+            width: 80px;
+            height: auto;
+            max-width: 100%;
+        }
+        
+        .header h1, .header h2 {
+            font-family: 'Spectral', serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .header p {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px 25px;
+        }
+        
+        .greeting {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        
+        .main-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            color: #4a5568;
+        }
+        
+        .question-section {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .question-text {
+            font-family: 'Spectral', serif;
+            font-size: 1.4rem;
+            color: #0c4a6e;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .question-subtitle {
+            color: #0369a1;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #162d59;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: #1e3a8a;
+        }
+        
+        .prizes-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .prizes-title {
+            color: #92400e;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .prize-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 6px;
+        }
+        
+        .prize-icon {
+            font-size: 1.5rem;
+            margin-right: 12px;
+            width: 35px;
+            text-align: center;
+        }
+        
+        .prize-text {
+            flex: 1;
+            color: #78350f;
+        }
+        
+        .prize-text strong {
+            color: #92400e;
+        }
+        
+        .how-it-works {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .how-it-works h3 {
+            color: #047857;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+        }
+        
+        .step-number {
+            background: #10b981;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            color: #065f46;
+            flex: 1;
+        }
+        
+        .footer {
+            background: #f8fafc;
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer-text {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .unsubscribe {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        /* Merge Fields Demo Styles */
+        .merge-fields-demo {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .toggle-btn {
+            background: none;
+            color: #1e3a8a;
+            border: none;
+            padding: 12px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+        
+        .toggle-btn:hover {
+            color: #162d59;
+        }
+        
+        .merge-fields-panel {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .merge-fields-panel h3 {
+            font-family: 'Spectral', serif;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .field-group {
+            margin-bottom: 15px;
+        }
+        
+        .field-group label {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .field-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .field-group input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+        
+        .apply-btn {
+            background: #162d59;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .apply-btn:hover {
+            background: #1e3a8a;
+        }
+        
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .prize-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .prize-icon {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="merge-fields-demo">
+        <button id="toggleMergeFields" class="toggle-btn">Merge Fields</button>
+        <div id="mergeFieldsPanel" class="merge-fields-panel" style="display: none;">
+            <h3>Test Merge Fields</h3>
+            <div class="field-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" value="David" placeholder="e.g., David">
+            </div>
+            <div class="field-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" value="Rawlings" placeholder="e.g., Rawlings">
+            </div>
+            <div class="field-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="david@rawlings.us" placeholder="e.g., david@rawlings.us">
+            </div>
+            <button id="applyMergeFields" class="apply-btn">Apply Merge Fields</button>
+        </div>
+    </div>
+    
+    <div class="email-container">
+        <div class="logo-container">
+            <div class="flag-icon">
+                <img src="https://usf-testimonial-collector-production.up.railway.app/assets/48f47d55-65ce-4116-9b32-5c0068a377c1" alt="Super Tough Flag Logo">
+            </div>
+        </div>
+        <div class="header">
+            <h1>Do You Love Your Super Tough Flag?</h1>
+            <p>If so, we have a giveaway for you, <span id="first_name_placeholder">{{first_name}}</span>!</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Hi <span id="greeting_first_name_placeholder">{{first_name}}</span>,
+            </div>
+            
+            <div class="main-text">
+                We hope your Super Tough flag is flying proudly and holding up beautifully! We're reaching out because we want to hear from customers like you who love their flags.
+            </div>
+            
+            <div class="main-text">
+                Record a quick video or take a photo of your testimonial and you could win:
+            </div>
+            
+            <div class="prizes-section">
+                <div class="prizes-title">🎁 Grand Prize Giveaway</div>
+                
+                <div class="prize-item">
+                    <div class="prize-icon">🏆</div>
+                    <div class="prize-text">
+                        <strong>Super Tough Flag every 6 months for LIFE</strong><br>
+                        That's 2 flags per year, forever!
+                    </div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-icon">📱</div>
+                    <div class="prize-text">
+                        <strong>Easy to enter:</strong> Just record a 30-60 second video or take a photo with your testimonial
+                    </div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-icon">🎬</div>
+                    <div class="prize-text">
+                        <strong>Share your story:</strong> Tell us how long your flag has been flying and what impressed you most
+                    </div>
+                </div>
+            </div>
+            
+            <div class="how-it-works">
+                <h3>How It Works</h3>
+                
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Click the button below to access our testimonial form</div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Record a short video (30-60 seconds) or take a photo with your testimonial</div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Submit your testimonial and you're automatically entered to win!</div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Winners will be notified by email within 30 days</div>
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px;">Ready to Share Your Experience?</h3>
+                <p style="margin-bottom: 15px; color: #4a5568;">It only takes 2 minutes to record your testimonial and enter the giveaway</p>
+                <a href="https://usf-testimonial-collector-production.up.railway.app/video_collector.html?first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta1">Yes, I'll Make a Video!</a>
+                <br>
+                <a href="https://usf-testimonial-collector-production.up.railway.app/photo_testimonial.html?first_name={{first_name}}&last_name={{last_name}}&email={{email}}" style="color: #1e3a8a; text-decoration: underline; font-size: 14px; margin-top: 10px; display: inline-block;" id="cta2">I prefer a photo testimonial</a>
+            </div>
+            
+            <div class="main-text" style="margin-top: 30px;">
+                Whether you choose video or photo, your testimonial helps fellow Americans choose quality flags they can count on. Thank you for flying the stars and stripes with pride!
+            </div>
+            
+            <div style="margin-top: 25px; color: #4a5568;">
+                Best regards,<br>
+                <strong>The Super Tough Flag Team</strong><br>
+                United-States-Flag.com
+            </div>
+            
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.9rem;">
+                <strong>P.S.</strong> If you have different feedback about your Super Tough flag experience, please reply to this email and let us know. We value all customer feedback and want to hear from you!
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-text">
+                Questions? Reply to this email or visit our <a href="{{support_link}}" style="color: #1e3a8a;">Help Center</a>
+            </div>
+            <div class="footer-text">
+                <a href="{{unsubscribe_link}}" class="unsubscribe">Unsubscribe</a> | 
+                <a href="{{preferences_link}}" class="unsubscribe">Email Preferences</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Merge Fields Demo Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleMergeFields');
+            const mergePanel = document.getElementById('mergeFieldsPanel');
+            const applyBtn = document.getElementById('applyMergeFields');
+            
+            // Toggle merge fields panel
+            toggleBtn.addEventListener('click', function() {
+                if (mergePanel.style.display === 'none') {
+                    mergePanel.style.display = 'block';
+                    toggleBtn.textContent = 'Hide Merge Fields';
+                } else {
+                    mergePanel.style.display = 'none';
+                    toggleBtn.textContent = 'Merge Fields';
+                }
+            });
+            
+            // Apply merge fields
+            applyBtn.addEventListener('click', function() {
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                
+                // Update placeholders in email content
+                document.getElementById('first_name_placeholder').textContent = firstName;
+                document.getElementById('greeting_first_name_placeholder').textContent = firstName;
+                
+                // Update CTA URLs with merge fields
+                const videoUrl = `https://usf-testimonial-collector-production.up.railway.app/video_collector.html?first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`;
+                const photoUrl = `https://usf-testimonial-collector-production.up.railway.app/photo_testimonial.html?first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`;
+                
+                document.getElementById('cta1').href = videoUrl;
+                document.getElementById('cta2').href = photoUrl;
+                
+                // Show success message
+                alert('Merge fields applied! The email now shows personalized content and the CTA buttons link to the testimonial forms with your data.');
+            });
+        });
+    </script>
+</body>
+</html> 
