@@ -168,6 +168,23 @@
             cursor: not-allowed;
         }
         
+        .retake-link {
+            color: #6b7280;
+            text-decoration: underline;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .retake-link:hover {
+            color: #374151;
+        }
+        
+        .submit-section {
+            display: none;
+        }
+        
         .prompts {
             background: #fef3c7;
             border-left: 4px solid #f59e0b;
@@ -234,7 +251,7 @@
                 <p>Upload a photo of your flag or your experience</p>
                 
                 <div class="upload-buttons">
-                    <button type="button" class="upload-btn" onclick="document.getElementById('photoInput').click()">
+                    <button type="button" class="upload-btn" id="takePhotoBtn" onclick="document.getElementById('photoInput').click()">
                         📸 Take/Upload Photo
                     </button>
                 </div>
@@ -243,7 +260,14 @@
                 
                 <div id="filePreview" class="file-preview">
                     <span id="fileName"></span>
+                    <a class="retake-link" onclick="retakePhoto()">🔄 Re-take photo</a>
                 </div>
+            </div>
+            
+            <div class="submit-section" id="submitSection">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    📤 Submit My Photo Testimonial
+                </button>
             </div>
             
             <div class="prompts">
@@ -256,10 +280,6 @@
                     <li>Any specific stories or experiences with your flag</li>
                 </ul>
             </div>
-            
-            <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                📤 Submit My Photo Testimonial
-            </button>
         </form>
     </div>
     
@@ -317,16 +337,26 @@
                     selectedFile = file;
                     const preview = document.getElementById('filePreview');
                     const fileName = document.getElementById('fileName');
-                    const submitBtn = document.getElementById('submitBtn');
+                    const takePhotoBtn = document.getElementById('takePhotoBtn');
+                    const submitSection = document.getElementById('submitSection');
                     
                     fileName.textContent = `${type} selected: ${file.name}`;
                     preview.style.display = 'block';
                     
-                    // Enable submit button when photo is attached
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '#162d59';
+                    // Hide take photo button and show submit section
+                    takePhotoBtn.style.display = 'none';
+                    submitSection.style.display = 'block';
                 }
             });
+        }
+        
+        // Function to retake photo
+        function retakePhoto() {
+            selectedFile = null;
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('takePhotoBtn').style.display = 'block';
+            document.getElementById('submitSection').style.display = 'none';
+            document.getElementById('photoInput').value = '';
         }
         
         // Initialize file input
@@ -374,7 +404,8 @@
                     this.reset();
                     selectedFile = null;
                     document.getElementById('filePreview').style.display = 'none';
-                    submitBtn.disabled = true;
+                    document.getElementById('takePhotoBtn').style.display = 'block';
+                    document.getElementById('submitSection').style.display = 'none';
                     submitBtn.textContent = 'Submit My Photo Testimonial';
                 } else {
                     throw new Error(data.message || 'Submission failed');
@@ -383,7 +414,6 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Sorry, there was an error submitting your testimonial. Please try again.');
-                submitBtn.disabled = true;
                 submitBtn.textContent = 'Submit My Photo Testimonial';
             });
         });

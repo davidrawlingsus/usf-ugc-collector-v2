@@ -176,6 +176,23 @@
             cursor: not-allowed;
         }
         
+        .retake-link {
+            color: #6b7280;
+            text-decoration: underline;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .retake-link:hover {
+            color: #374151;
+        }
+        
+        .submit-section {
+            display: none;
+        }
+        
         .prompts {
             background: #fef3c7;
             border-left: 4px solid #f59e0b;
@@ -227,7 +244,7 @@
                 <p>Share a 30-60 second video with your Super Tough flag</p>
                 
                 <div class="upload-buttons">
-                    <button type="button" class="upload-btn" onclick="document.getElementById('videoInput').click()">
+                    <button type="button" class="upload-btn" id="takeVideoBtn" onclick="document.getElementById('videoInput').click()">
                         🎥 Take/Upload Video
                     </button>
                 </div>
@@ -236,7 +253,14 @@
                 
                 <div id="filePreview" class="file-preview">
                     <span id="fileName"></span>
+                    <a class="retake-link" onclick="retakeVideo()">🔄 Re-take video</a>
                 </div>
+            </div>
+            
+            <div class="submit-section" id="submitSection">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    📤 Submit My Video Testimonial
+                </button>
             </div>
             
             <div class="prompts">
@@ -248,10 +272,6 @@
                     <li>Whether you'd recommend it to others and why</li>
                 </ul>
             </div>
-            
-            <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                📤 Submit My Video Testimonial
-            </button>
         </form>
     </div>
     
@@ -309,16 +329,26 @@
                     selectedFile = file;
                     const preview = document.getElementById('filePreview');
                     const fileName = document.getElementById('fileName');
-                    const submitBtn = document.getElementById('submitBtn');
+                    const takeVideoBtn = document.getElementById('takeVideoBtn');
+                    const submitSection = document.getElementById('submitSection');
                     
                     fileName.textContent = `${type} selected: ${file.name}`;
                     preview.style.display = 'block';
                     
-                    // Enable submit button when video is attached
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '#dc2626';
+                    // Hide take video button and show submit section
+                    takeVideoBtn.style.display = 'none';
+                    submitSection.style.display = 'block';
                 }
             });
+        }
+        
+        // Function to retake video
+        function retakeVideo() {
+            selectedFile = null;
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('takeVideoBtn').style.display = 'block';
+            document.getElementById('submitSection').style.display = 'none';
+            document.getElementById('videoInput').value = '';
         }
         
         // Initialize file input
@@ -365,7 +395,8 @@
                     this.reset();
                     selectedFile = null;
                     document.getElementById('filePreview').style.display = 'none';
-                    submitBtn.disabled = false;
+                    document.getElementById('takeVideoBtn').style.display = 'block';
+                    document.getElementById('submitSection').style.display = 'none';
                     submitBtn.textContent = 'Submit My Video Testimonial';
                 } else {
                     throw new Error(data.message || 'Submission failed');
@@ -374,7 +405,6 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Sorry, there was an error submitting your testimonial. Please try again.');
-                submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit My Video Testimonial';
             });
         });
