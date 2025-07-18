@@ -361,6 +361,116 @@
             display: none;
         }
         
+        .filters-section {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .filters-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .filters-title {
+            font-weight: bold;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn-primary {
+            background: #1e3a8a;
+            color: white;
+        }
+        
+        .filter-btn-primary:hover {
+            background: #1e40af;
+        }
+        
+        .filter-btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .filter-btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .active-filter-tag {
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .active-filter-tag .remove-filter {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
         .loading-spinner {
             display: inline-block;
             width: 16px;
@@ -401,6 +511,75 @@
                 <div class="stat-number" id="writtenCount">-</div>
                 <div class="stat-label">Written Testimonials</div>
             </div>
+        </div>
+        
+        <div class="filters-section">
+            <div class="filters-header">
+                <span class="filters-title">🔍 Filter Testimonials</span>
+            </div>
+            
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Media Type</label>
+                    <select class="filter-select" id="mediaTypeFilter">
+                        <option value="">All Types</option>
+                        <option value="video">Video</option>
+                        <option value="photo">Photo</option>
+                        <option value="written">Written</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Current Flight Time</label>
+                    <select class="filter-select" id="currentFlightFilter">
+                        <option value="">All Times</option>
+                        <option value="1-2_months">1-2 months</option>
+                        <option value="3-4_months">3-4 months</option>
+                        <option value="5-6_months">5-6 months</option>
+                        <option value="6-7_months">6-7 months</option>
+                        <option value="8+_months">8+ months</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Use Case</label>
+                    <select class="filter-select" id="useCaseFilter">
+                        <option value="">All Use Cases</option>
+                        <option value="247">24/7</option>
+                        <option value="occasional">Occasional</option>
+                        <option value="seasonal">Seasonal</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Weather Type</label>
+                    <select class="filter-select" id="weatherFilter">
+                        <option value="">All Weather</option>
+                        <option value="sunny">Sunny</option>
+                        <option value="rainy">Rainy</option>
+                        <option value="windy">Windy</option>
+                        <option value="extreme">Extreme</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Extreme Conditions</label>
+                    <select class="filter-select" id="extremeConditionsFilter">
+                        <option value="">All Conditions</option>
+                        <option value="high_uv">High UV</option>
+                        <option value="high_wind">High Wind</option>
+                        <option value="extreme_temp">Extreme Temperature</option>
+                        <option value="storms">Storms</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-actions">
+                <button class="filter-btn filter-btn-primary" onclick="applyFilters()">Apply Filters</button>
+                <button class="filter-btn filter-btn-secondary" onclick="clearFilters()">Clear All</button>
+            </div>
+            
+            <div class="active-filters" id="activeFilters"></div>
         </div>
         
         <div class="testimonials" id="testimonials">
@@ -464,147 +643,7 @@
             }
         }
         
-        // Load testimonials from API
-        async function loadTestimonials() {
-            try {
-                const response = await fetch('/api/testimonials');
-                const testimonials = await response.json();
-                
-                // Update stats
-                const totalCount = testimonials.length;
-                const videoCount = testimonials.filter(t => t.testimonial_type === 'video').length;
-                const photoCount = testimonials.filter(t => t.testimonial_type === 'photo').length;
-                const writtenCount = testimonials.filter(t => t.testimonial_type === 'written').length;
-                
-                document.getElementById('totalCount').textContent = totalCount;
-                document.getElementById('videoCount').textContent = videoCount;
-                document.getElementById('photoCount').textContent = photoCount;
-                document.getElementById('writtenCount').textContent = writtenCount;
-                
-                // Display testimonials
-                const testimonialsContainer = document.getElementById('testimonials');
-                testimonialsContainer.innerHTML = '';
-                
-                if (testimonials.length === 0) {
-                    testimonialsContainer.innerHTML = '<div class="loading">No testimonials submitted yet.</div>';
-                    return;
-                }
-                
-                testimonials.forEach(testimonial => {
-                    const card = document.createElement('div');
-                    card.className = 'testimonial-card';
-                    card.id = `testimonial-${testimonial.uuid}`;
-                    
-                    const typeClass = `type-${testimonial.testimonial_type}`;
-                    const typeLabel = testimonial.testimonial_type.charAt(0).toUpperCase() + testimonial.testimonial_type.slice(1);
-                    
-                    let mediaHtml = '';
-                    if (testimonial.media_file) {
-                        const mediaUrl = `${window.location.origin}/uploads/${testimonial.media_file}`;
-                        
-                        if (testimonial.media_type && (testimonial.media_type.startsWith('image/') || testimonial.media_type === 'image/heic' || testimonial.media_type === 'image/heif')) {
-                            // Image preview (including HEIC)
-                            mediaHtml = `
-                                <div class="media-preview">
-                                    <img src="${mediaUrl}" alt="Testimonial photo" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-                                    <div class="video-fallback" style="display: none;" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
-                                        <div>
-                                            <div style="font-size: 2rem; margin-bottom: 10px;">📷</div>
-                                            <div>Image File: ${testimonial.media_file}</div>
-                                            <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">File may have been lost during deployment</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="${mediaUrl}" target="_blank" class="media-link">
-                                    📎 Download Photo
-                                </a>
-                            `;
-                        } else if (testimonial.media_type && testimonial.media_type.startsWith('video/')) {
-                            // Video preview with fallback
-                            const isSupportedFormat = testimonial.media_type.includes('mp4') || testimonial.media_type.includes('webm') || testimonial.media_type.includes('ogg');
-                            
-                            if (isSupportedFormat) {
-                                mediaHtml = `
-                                    <div class="media-preview">
-                                        <video controls preload="metadata" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
-                                            <source src="${mediaUrl}" type="${testimonial.media_type}">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                    <a href="${mediaUrl}" target="_blank" class="media-link">
-                                        📎 Download Video
-                                    </a>
-                                `;
-                            } else {
-                                // Fallback for unsupported formats like .MOV
-                                mediaHtml = `
-                                    <div class="media-preview">
-                                        <div class="video-fallback" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
-                                            <div>
-                                                <div style="font-size: 2rem; margin-bottom: 10px;">🎬</div>
-                                                <div>Video Format: ${testimonial.media_type}</div>
-                                                <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Click to download</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a href="${mediaUrl}" target="_blank" class="media-link">
-                                        📎 Download Video
-                                    </a>
-                                `;
-                            }
-                        } else {
-                            // Fallback for unknown media types
-                            mediaHtml = `
-                                <a href="${mediaUrl}" target="_blank" class="media-link">
-                                    📎 View Media File
-                                </a>
-                            `;
-                        }
-                    }
-                    
-                    let metaHtml = '';
-                    const meta = [];
-                    if (testimonial.email) meta.push(`Email:${testimonial.email}`);
-                    if (testimonial.current_flight_time) meta.push(`Current flight: ${testimonial.current_flight_time}`);
-                    if (testimonial.past_flight_time) meta.push(`Past flight: ${testimonial.past_flight_time}`);
-                    if (testimonial.use_case) meta.push(`Use case: ${testimonial.use_case}`);
-                    if (testimonial.weather_type) meta.push(`Weather: ${testimonial.weather_type}`);
-                    if (testimonial.extreme_conditions) meta.push(`Extreme conditions: ${testimonial.extreme_conditions}`);
-                    
-                    if (meta.length > 0) {
-                        metaHtml = `<div class="testimonial-meta">${meta.map(tag => `<span class="meta-tag">${tag}</span>`).join('')}</div>`;
-                    }
-                    
-                    card.innerHTML = `
-                        <button class="delete-btn" onclick="deleteTestimonial('${testimonial.uuid}', '${testimonial.name}')">
-                            🗑️
-                        </button>
-                        <div class="testimonial-content">
-                            <div class="testimonial-header">
-                                <span class="testimonial-type ${typeClass}">${typeLabel}</span>
-                                <div class="testimonial-name">${testimonial.name}</div>
-                            </div>
-                            ${metaHtml}
-                            ${testimonial.testimonial_text ? `
-                                <div class="testimonial-text-label">Testimonial Text</div>
-                                <div class="testimonial-text">${testimonial.testimonial_text}</div>
-                            ` : ''}
-                        </div>
-                        ${mediaHtml ? `<div class="testimonial-media-section">${mediaHtml}</div>` : ''}
-                    `;
-                    
-                    testimonialsContainer.appendChild(card);
-                });
-                
-            } catch (error) {
-                console.error('Error loading testimonials:', error);
-                document.getElementById('testimonials').innerHTML = `
-                    <div class="error">
-                        Error loading testimonials. Please check the server connection.
-                    </div>
-                `;
-            }
-        }
+        // Load testimonials function moved to new filtering system below
         
         // Delete testimonial function
         async function deleteTestimonial(uuid, name) {
@@ -651,6 +690,252 @@
                 // Reset button
                 deleteBtn.innerHTML = originalText;
                 deleteBtn.disabled = false;
+            }
+        }
+        
+        // Global variables for filtering
+        let allTestimonials = [];
+        let filteredTestimonials = [];
+        
+        // Filter functions
+        function applyFilters() {
+            const mediaType = document.getElementById('mediaTypeFilter').value;
+            const currentFlight = document.getElementById('currentFlightFilter').value;
+            const useCase = document.getElementById('useCaseFilter').value;
+            const weather = document.getElementById('weatherFilter').value;
+            const extremeConditions = document.getElementById('extremeConditionsFilter').value;
+            
+            // Apply filters
+            filteredTestimonials = allTestimonials.filter(testimonial => {
+                let matches = true;
+                
+                if (mediaType && testimonial.testimonial_type !== mediaType) {
+                    matches = false;
+                }
+                
+                if (currentFlight && testimonial.current_flight_time !== currentFlight) {
+                    matches = false;
+                }
+                
+                if (useCase && testimonial.use_case !== useCase) {
+                    matches = false;
+                }
+                
+                if (weather && testimonial.weather_type !== weather) {
+                    matches = false;
+                }
+                
+                if (extremeConditions && testimonial.extreme_conditions !== extremeConditions) {
+                    matches = false;
+                }
+                
+                return matches;
+            });
+            
+            // Update active filters display
+            updateActiveFilters(mediaType, currentFlight, useCase, weather, extremeConditions);
+            
+            // Display filtered testimonials
+            displayTestimonials(filteredTestimonials);
+        }
+        
+        function clearFilters() {
+            document.getElementById('mediaTypeFilter').value = '';
+            document.getElementById('currentFlightFilter').value = '';
+            document.getElementById('useCaseFilter').value = '';
+            document.getElementById('weatherFilter').value = '';
+            document.getElementById('extremeConditionsFilter').value = '';
+            
+            document.getElementById('activeFilters').innerHTML = '';
+            
+            // Display all testimonials
+            displayTestimonials(allTestimonials);
+        }
+        
+        function updateActiveFilters(mediaType, currentFlight, useCase, weather, extremeConditions) {
+            const activeFiltersContainer = document.getElementById('activeFilters');
+            activeFiltersContainer.innerHTML = '';
+            
+            const filters = [
+                { key: 'mediaType', value: mediaType, label: 'Media Type' },
+                { key: 'currentFlight', value: currentFlight, label: 'Current Flight' },
+                { key: 'useCase', value: useCase, label: 'Use Case' },
+                { key: 'weather', value: weather, label: 'Weather' },
+                { key: 'extremeConditions', value: extremeConditions, label: 'Extreme Conditions' }
+            ];
+            
+            filters.forEach(filter => {
+                if (filter.value) {
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'active-filter-tag';
+                    filterTag.innerHTML = `
+                        ${filter.label}: ${filter.value}
+                        <span class="remove-filter" onclick="removeFilter('${filter.key}')">×</span>
+                    `;
+                    activeFiltersContainer.appendChild(filterTag);
+                }
+            });
+        }
+        
+        function removeFilter(filterKey) {
+            const filterMap = {
+                'mediaType': 'mediaTypeFilter',
+                'currentFlight': 'currentFlightFilter',
+                'useCase': 'useCaseFilter',
+                'weather': 'weatherFilter',
+                'extremeConditions': 'extremeConditionsFilter'
+            };
+            
+            const filterId = filterMap[filterKey];
+            if (filterId) {
+                document.getElementById(filterId).value = '';
+                applyFilters();
+            }
+        }
+        
+        function displayTestimonials(testimonials) {
+            const testimonialsContainer = document.getElementById('testimonials');
+            testimonialsContainer.innerHTML = '';
+            
+            if (testimonials.length === 0) {
+                testimonialsContainer.innerHTML = '<div class="loading">No testimonials match the current filters.</div>';
+                return;
+            }
+            
+            testimonials.forEach(testimonial => {
+                const card = document.createElement('div');
+                card.className = 'testimonial-card';
+                card.id = `testimonial-${testimonial.uuid}`;
+                
+                const typeClass = `type-${testimonial.testimonial_type}`;
+                const typeLabel = testimonial.testimonial_type.charAt(0).toUpperCase() + testimonial.testimonial_type.slice(1);
+                
+                let mediaHtml = '';
+                if (testimonial.media_file) {
+                    const mediaUrl = `${window.location.origin}/uploads/${testimonial.media_file}`;
+                    
+                    if (testimonial.media_type && (testimonial.media_type.startsWith('image/') || testimonial.media_type === 'image/heic' || testimonial.media_type === 'image/heif')) {
+                        // Image preview (including HEIC)
+                        mediaHtml = `
+                            <div class="media-preview">
+                                <img src="${mediaUrl}" alt="Testimonial photo" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                                <div class="video-fallback" style="display: none;" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
+                                    <div>
+                                        <div style="font-size: 2rem; margin-bottom: 10px;">📷</div>
+                                        <div>Image File: ${testimonial.media_file}</div>
+                                        <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">File may have been lost during deployment</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="${mediaUrl}" target="_blank" class="media-link">
+                                📎 Download Photo
+                            </a>
+                        `;
+                    } else if (testimonial.media_type && testimonial.media_type.startsWith('video/')) {
+                        // Video preview with fallback
+                        const isSupportedFormat = testimonial.media_type.includes('mp4') || testimonial.media_type.includes('webm') || testimonial.media_type.includes('ogg');
+                        
+                        if (isSupportedFormat) {
+                            mediaHtml = `
+                                <div class="media-preview">
+                                    <video controls preload="metadata" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
+                                        <source src="${mediaUrl}" type="${testimonial.media_type}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <a href="${mediaUrl}" target="_blank" class="media-link">
+                                    📎 Download Video
+                                </a>
+                            `;
+                        } else {
+                            // Fallback for unsupported formats like .MOV
+                            mediaHtml = `
+                                <div class="media-preview">
+                                    <div class="video-fallback" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
+                                        <div>
+                                            <div style="font-size: 2rem; margin-bottom: 10px;">🎬</div>
+                                            <div>Video Format: ${testimonial.media_type}</div>
+                                            <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Click to download</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="${mediaUrl}" target="_blank" class="media-link">
+                                    📎 Download Video
+                                </a>
+                            `;
+                        }
+                    } else {
+                        // Fallback for unknown media types
+                        mediaHtml = `
+                            <a href="${mediaUrl}" target="_blank" class="media-link">
+                                📎 View Media File
+                            </a>
+                        `;
+                    }
+                }
+                
+                let metaHtml = '';
+                const meta = [];
+                if (testimonial.email) meta.push(`Email:${testimonial.email}`);
+                if (testimonial.current_flight_time) meta.push(`Current flight: ${testimonial.current_flight_time}`);
+                if (testimonial.past_flight_time) meta.push(`Past flight: ${testimonial.past_flight_time}`);
+                if (testimonial.use_case) meta.push(`Use case: ${testimonial.use_case}`);
+                if (testimonial.weather_type) meta.push(`Weather: ${testimonial.weather_type}`);
+                if (testimonial.extreme_conditions) meta.push(`Extreme conditions: ${testimonial.extreme_conditions}`);
+                
+                if (meta.length > 0) {
+                    metaHtml = `<div class="testimonial-meta">${meta.map(tag => `<span class="meta-tag">${tag}</span>`).join('')}</div>`;
+                }
+                
+                card.innerHTML = `
+                    <button class="delete-btn" onclick="deleteTestimonial('${testimonial.uuid}', '${testimonial.name}')">
+                        🗑️
+                    </button>
+                    <div class="testimonial-content">
+                        <div class="testimonial-header">
+                            <span class="testimonial-type ${typeClass}">${typeLabel}</span>
+                            <div class="testimonial-name">${testimonial.name}</div>
+                        </div>
+                        ${metaHtml}
+                        ${testimonial.testimonial_text ? `
+                            <div class="testimonial-text-label">Testimonial Text</div>
+                            <div class="testimonial-text">${testimonial.testimonial_text}</div>
+                        ` : ''}
+                    </div>
+                    ${mediaHtml ? `<div class="testimonial-media-section">${mediaHtml}</div>` : ''}
+                `;
+                
+                testimonialsContainer.appendChild(card);
+            });
+        }
+        
+        // Modified loadTestimonials function
+        async function loadTestimonials() {
+            try {
+                const response = await fetch('/api/testimonials');
+                allTestimonials = await response.json();
+                
+                // Update stats
+                const totalCount = allTestimonials.length;
+                const videoCount = allTestimonials.filter(t => t.testimonial_type === 'video').length;
+                const photoCount = allTestimonials.filter(t => t.testimonial_type === 'photo').length;
+                const writtenCount = allTestimonials.filter(t => t.testimonial_type === 'written').length;
+                
+                document.getElementById('totalCount').textContent = totalCount;
+                document.getElementById('videoCount').textContent = videoCount;
+                document.getElementById('photoCount').textContent = photoCount;
+                document.getElementById('writtenCount').textContent = writtenCount;
+                
+                // Display all testimonials initially
+                displayTestimonials(allTestimonials);
+                
+            } catch (error) {
+                console.error('Error loading testimonials:', error);
+                document.getElementById('testimonials').innerHTML = `
+                    <div class="error">
+                        Error loading testimonials. Please check the server connection.
+                    </div>
+                `;
             }
         }
         
