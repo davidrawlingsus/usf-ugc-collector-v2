@@ -81,18 +81,42 @@
         }
         
         .testimonial-card {
-            background: #f8fafc;
-            border: 2px solid #e5e7eb;
+            background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 25px;
+            position: relative;
+        }
+        
+        .testimonial-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .testimonial-media-section {
+            flex-shrink: 0;
+            width: 300px;
         }
         
         .testimonial-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-type {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            text-transform: capitalize;
         }
         
         .testimonial-type {
@@ -122,7 +146,8 @@
         .testimonial-name {
             font-weight: bold;
             color: #1e3a8a;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
         }
         
         .testimonial-email {
@@ -134,9 +159,19 @@
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
+            padding: 20px;
+            margin: 15px 0;
             white-space: pre-wrap;
+            min-height: 120px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .testimonial-text-label {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
         }
         
         .testimonial-media {
@@ -147,10 +182,12 @@
             display: inline-block;
             background: #1e3a8a;
             color: white;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 6px;
             text-decoration: none;
             font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
         
         .media-link:hover {
@@ -158,12 +195,13 @@
         }
         
         .media-preview {
-            margin: 10px 0;
+            margin-bottom: 15px;
         }
         
         .media-preview img {
-            max-width: 100%;
-            max-height: 200px;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
             cursor: pointer;
@@ -171,12 +209,13 @@
         }
         
         .media-preview img:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
         
         .media-preview video {
-            max-width: 100%;
-            max-height: 200px;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             border-radius: 8px;
             border: 1px solid #e5e7eb;
             cursor: pointer;
@@ -237,9 +276,19 @@
         }
         
         .testimonial-meta {
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .meta-tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
         
         .loading {
@@ -258,24 +307,20 @@
         }
         
         .delete-btn {
-            background: #dc2626;
-            color: white;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            color: #6b7280;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: color 0.2s;
+            padding: 5px;
         }
         
         .delete-btn:hover {
-            background: #b91c1c;
-        }
-        
-        .testimonial-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            color: #dc2626;
         }
         
         .success-message {
@@ -432,38 +477,32 @@
                         if (testimonial.media_type && (testimonial.media_type.startsWith('image/') || testimonial.media_type === 'image/heic' || testimonial.media_type === 'image/heif')) {
                             // Image preview (including HEIC)
                             mediaHtml = `
-                                <div class="testimonial-media">
-                                    <div class="media-preview">
-                                        <img src="${mediaUrl}" alt="Testimonial photo" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" />
-                                    </div>
-                                    <a href="${mediaUrl}" target="_blank" class="media-link">
-                                        📎 Download Photo
-                                    </a>
+                                <div class="media-preview">
+                                    <img src="${mediaUrl}" alt="Testimonial photo" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" />
                                 </div>
+                                <a href="${mediaUrl}" target="_blank" class="media-link">
+                                    📎 Download Photo
+                                </a>
                             `;
                         } else if (testimonial.media_type && testimonial.media_type.startsWith('video/')) {
                             // Video preview
                             mediaHtml = `
-                                <div class="testimonial-media">
-                                    <div class="media-preview">
-                                        <video onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" controls>
-                                            <source src="${mediaUrl}" type="${testimonial.media_type}">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                    <a href="${mediaUrl}" target="_blank" class="media-link">
-                                        📎 Download Video
-                                    </a>
+                                <div class="media-preview">
+                                    <video onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')" controls>
+                                        <source src="${mediaUrl}" type="${testimonial.media_type}">
+                                        Your browser does not support the video tag.
+                                    </video>
                                 </div>
+                                <a href="${mediaUrl}" target="_blank" class="media-link">
+                                    📎 Download Video
+                                </a>
                             `;
                         } else {
                             // Fallback for unknown media types
                             mediaHtml = `
-                                <div class="testimonial-media">
-                                    <a href="${mediaUrl}" target="_blank" class="media-link">
-                                        📎 View Media File
-                                    </a>
-                                </div>
+                                <a href="${mediaUrl}" target="_blank" class="media-link">
+                                    📎 View Media File
+                                </a>
                             `;
                         }
                     }
@@ -471,32 +510,32 @@
                     let metaHtml = '';
                     if (testimonial.current_flight_time || testimonial.past_flight_time || testimonial.use_case || testimonial.weather_type || testimonial.extreme_conditions) {
                         const meta = [];
+                        if (testimonial.email) meta.push(`Email:${testimonial.email}`);
                         if (testimonial.current_flight_time) meta.push(`Current flight: ${testimonial.current_flight_time}`);
                         if (testimonial.past_flight_time) meta.push(`Past flight: ${testimonial.past_flight_time}`);
                         if (testimonial.use_case) meta.push(`Use case: ${testimonial.use_case}`);
                         if (testimonial.weather_type) meta.push(`Weather: ${testimonial.weather_type}`);
                         if (testimonial.extreme_conditions) meta.push(`Extreme conditions: ${testimonial.extreme_conditions}`);
                         
-                        metaHtml = `<div class="testimonial-meta">${meta.join(' • ')}</div>`;
+                        metaHtml = `<div class="testimonial-meta">${meta.map(tag => `<span class="meta-tag">${tag}</span>`).join('')}</div>`;
                     }
                     
                     card.innerHTML = `
-                        <div class="testimonial-header">
-                            <span class="testimonial-type ${typeClass}">${typeLabel}</span>
-                            <span class="testimonial-date">${new Date(testimonial.created_at).toLocaleDateString()}</span>
+                        <button class="delete-btn" onclick="deleteTestimonial('${testimonial.uuid}', '${testimonial.name}')">
+                            🗑️
+                        </button>
+                        <div class="testimonial-content">
+                            <div class="testimonial-header">
+                                <span class="testimonial-type ${typeClass}">${typeLabel}</span>
+                                <div class="testimonial-name">${testimonial.name}</div>
+                            </div>
+                            ${metaHtml}
+                            ${testimonial.testimonial_text ? `
+                                <div class="testimonial-text-label">Testimonial Text</div>
+                                <div class="testimonial-text">${testimonial.testimonial_text}</div>
+                            ` : ''}
                         </div>
-                        <div class="testimonial-info">
-                            <div class="testimonial-name">${testimonial.name}</div>
-                            <div class="testimonial-email">${testimonial.email}</div>
-                        </div>
-                        ${testimonial.testimonial_text ? `<div class="testimonial-text">${testimonial.testimonial_text}</div>` : ''}
-                        ${mediaHtml}
-                        ${metaHtml}
-                        <div class="testimonial-actions">
-                            <button class="delete-btn" onclick="deleteTestimonial('${testimonial.uuid}', '${testimonial.name}')">
-                                🗑️ Delete Testimonial
-                            </button>
-                        </div>
+                        ${mediaHtml ? `<div class="testimonial-media-section">${mediaHtml}</div>` : ''}
                     `;
                     
                     testimonialsContainer.appendChild(card);
