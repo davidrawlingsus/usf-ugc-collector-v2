@@ -85,6 +85,7 @@
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 25px;
+            padding-top: 35px;
             margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
@@ -101,6 +102,8 @@
         .testimonial-media-section {
             flex-shrink: 0;
             width: 300px;
+            position: relative;
+            padding-top: 10px;
         }
         
         .testimonial-header {
@@ -324,19 +327,28 @@
         
         .delete-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
             color: #6b7280;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: color 0.2s;
-            padding: 5px;
+            transition: all 0.2s;
+            padding: 8px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
         
         .delete-btn:hover {
             color: #dc2626;
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
         }
         
         .success-message {
