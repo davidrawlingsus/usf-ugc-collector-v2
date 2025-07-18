@@ -154,12 +154,22 @@
             const firstName = getUrlParameter('first_name');
             const lastName = getUrlParameter('last_name');
             const email = getUrlParameter('email');
+            const currentFlightTime = getUrlParameter('current_flight_time');
+            const pastFlightTime = getUrlParameter('past_flight_time');
+            const useCase = getUrlParameter('use_case');
+            const weatherType = getUrlParameter('weather_type');
+            const extremeConditions = getUrlParameter('extreme_conditions');
             
-            if (firstName || lastName || email) {
+            if (firstName || lastName || email || currentFlightTime || pastFlightTime || useCase || weatherType || extremeConditions) {
                 const params = new URLSearchParams();
                 if (firstName) params.append('first_name', firstName);
                 if (lastName) params.append('last_name', lastName);
                 if (email) params.append('email', email);
+                if (currentFlightTime) params.append('current_flight_time', currentFlightTime);
+                if (pastFlightTime) params.append('past_flight_time', pastFlightTime);
+                if (useCase) params.append('use_case', useCase);
+                if (weatherType) params.append('weather_type', weatherType);
+                if (extremeConditions) params.append('extreme_conditions', extremeConditions);
                 
                 const queryString = params.toString();
                 

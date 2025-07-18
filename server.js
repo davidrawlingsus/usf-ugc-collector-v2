@@ -1,0 +1,285 @@
+const express = require('express');
+const multer = require('multer');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+const sqlite3 = require('sqlite3').verbose();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.originalname)}`;
+        cb(null, uniqueName);
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 50 * 1024 * 1024 // 50MB limit
+    },
+    fileFilter: function (req, file, cb) {
+        // Allow videos and images
+        if (file.mimetype.startsWith('video/') || file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only video and image files are allowed!'), false);
+        }
+    }
+});
+
+// Initialize SQLite database
+const db = new sqlite3.Database('testimonials.db');
+
+// Create testimonials table
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS testimonials (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uuid TEXT UNIQUE,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        testimonial_text TEXT,
+        media_file TEXT,
+        media_type TEXT,
+        first_name TEXT,
+        last_name TEXT,
+        current_flight_time TEXT,
+        past_flight_time TEXT,
+        use_case TEXT,
+        weather_type TEXT,
+        extreme_conditions TEXT,
+        testimonial_type TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+});
+
+// Routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/video_collector.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'video_collector.html'));
+});
+
+app.get('/photo_testimonial.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'photo_testimonial.html'));
+});
+
+app.get('/written_testimonial.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'written_testimonial.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Handle video testimonial submission
+app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
+    try {
+        const {
+            name,
+            email,
+            first_name,
+            last_name,
+            current_flight_time,
+            past_flight_time,
+            use_case,
+            weather_type,
+            extreme_conditions
+        } = req.body;
+
+        const uuid = uuidv4();
+        const mediaFile = req.file ? req.file.filename : null;
+        const mediaType = req.file ? req.file.mimetype : null;
+
+        const stmt = db.prepare(`
+            INSERT INTO testimonials (
+                uuid, name, email, media_file, media_type, first_name, last_name,
+                current_flight_time, past_flight_time, use_case, weather_type,
+                extreme_conditions, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        stmt.run(
+            uuid, name, email, mediaFile, mediaType,
+            first_name, last_name, current_flight_time, past_flight_time,
+            use_case, weather_type, extreme_conditions, 'video'
+        );
+
+        stmt.finalize();
+
+        res.json({
+            success: true,
+            message: 'Video testimonial submitted successfully!',
+            uuid: uuid
+        });
+
+    } catch (error) {
+        console.error('Error submitting video testimonial:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error submitting testimonial'
+        });
+    }
+});
+
+// Handle photo testimonial submission
+app.post('/submit-photo-testimonial', upload.single('photo'), (req, res) => {
+    try {
+        const {
+            name,
+            email,
+            testimonial,
+            first_name,
+            last_name,
+            current_flight_time,
+            past_flight_time,
+            use_case,
+            weather_type,
+            extreme_conditions
+        } = req.body;
+
+        const uuid = uuidv4();
+        const mediaFile = req.file ? req.file.filename : null;
+        const mediaType = req.file ? req.file.mimetype : null;
+
+        const stmt = db.prepare(`
+            INSERT INTO testimonials (
+                uuid, name, email, testimonial_text, media_file, media_type,
+                first_name, last_name, current_flight_time, past_flight_time,
+                use_case, weather_type, extreme_conditions, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        stmt.run(
+            uuid, name, email, testimonial, mediaFile, mediaType,
+            first_name, last_name, current_flight_time, past_flight_time,
+            use_case, weather_type, extreme_conditions, 'photo'
+        );
+
+        stmt.finalize();
+
+        res.json({
+            success: true,
+            message: 'Photo testimonial submitted successfully!',
+            uuid: uuid
+        });
+
+    } catch (error) {
+        console.error('Error submitting photo testimonial:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error submitting testimonial'
+        });
+    }
+});
+
+// Handle written testimonial submission
+app.post('/submit-written-testimonial', (req, res) => {
+    try {
+        const {
+            name,
+            email,
+            testimonial,
+            first_name,
+            last_name,
+            current_flight_time,
+            past_flight_time,
+            use_case,
+            weather_type,
+            extreme_conditions
+        } = req.body;
+
+        const uuid = uuidv4();
+
+        const stmt = db.prepare(`
+            INSERT INTO testimonials (
+                uuid, name, email, testimonial_text, first_name, last_name,
+                current_flight_time, past_flight_time, use_case, weather_type,
+                extreme_conditions, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        stmt.run(
+            uuid, name, email, testimonial,
+            first_name, last_name, current_flight_time, past_flight_time,
+            use_case, weather_type, extreme_conditions, 'written'
+        );
+
+        stmt.finalize();
+
+        res.json({
+            success: true,
+            message: 'Written testimonial submitted successfully!',
+            uuid: uuid
+        });
+
+    } catch (error) {
+        console.error('Error submitting written testimonial:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error submitting testimonial'
+        });
+    }
+});
+
+// Get all testimonials (for admin purposes)
+app.get('/api/testimonials', (req, res) => {
+    db.all('SELECT * FROM testimonials ORDER BY created_at DESC', (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+// Get testimonial by UUID
+app.get('/api/testimonial/:uuid', (req, res) => {
+    const { uuid } = req.params;
+    db.get('SELECT * FROM testimonials WHERE uuid = ?', [uuid], (err, row) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ error: 'Testimonial not found' });
+            return;
+        }
+        res.json(row);
+    });
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+    console.error('Error:', error);
+    res.status(500).json({
+        success: false,
+        message: error.message || 'Internal server error'
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Visit http://localhost:${PORT} to view the testimonial forms`);
+}); 

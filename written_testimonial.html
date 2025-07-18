@@ -195,6 +195,11 @@
             const firstName = getUrlParameter('first_name');
             const lastName = getUrlParameter('last_name');
             const email = getUrlParameter('email');
+            const currentFlightTime = getUrlParameter('current_flight_time');
+            const pastFlightTime = getUrlParameter('past_flight_time');
+            const useCase = getUrlParameter('use_case');
+            const weatherType = getUrlParameter('weather_type');
+            const extremeConditions = getUrlParameter('extreme_conditions');
             
             // Combine first and last name
             if (firstName || lastName) {
@@ -206,6 +211,18 @@
             if (email) {
                 document.getElementById('email').value = email;
             }
+            
+            // Store additional parameters for submission
+            window.urlParams = {
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                current_flight_time: currentFlightTime,
+                past_flight_time: pastFlightTime,
+                use_case: useCase,
+                weather_type: weatherType,
+                extreme_conditions: extremeConditions
+            };
         });
         
         // Handle form submission
@@ -216,17 +233,49 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
             
-            // Here you would normally send the data to your server
-            // For this demo, we'll just show a success message
+            // Prepare data for submission
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                testimonial: document.getElementById('testimonial').value
+            };
             
-            setTimeout(() => {
-                alert('Thank you! Your written testimonial has been submitted successfully. You\'ll be entered in our lifetime supply giveaway!');
-                
-                // Reset form
-                this.reset();
+            // Add URL parameters
+            if (window.urlParams) {
+                Object.keys(window.urlParams).forEach(key => {
+                    if (window.urlParams[key]) {
+                        formData[key] = window.urlParams[key];
+                    }
+                });
+            }
+            
+            // Submit to backend
+            fetch('/submit-written-testimonial', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you! Your written testimonial has been submitted successfully. You\'ll be entered in our lifetime supply giveaway!');
+                    
+                    // Reset form
+                    this.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit My Written Testimonial';
+                } else {
+                    throw new Error(data.message || 'Submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Sorry, there was an error submitting your testimonial. Please try again.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit My Written Testimonial';
-            }, 2000);
+            });
         });
     </script>
 </body>
