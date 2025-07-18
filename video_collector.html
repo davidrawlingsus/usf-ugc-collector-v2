@@ -320,10 +320,10 @@
                 formData.append('video', selectedFile);
             }
             
-            // Add URL parameters
+            // Add URL parameters (excluding email to avoid conflicts)
             if (window.urlParams) {
                 Object.keys(window.urlParams).forEach(key => {
-                    if (window.urlParams[key]) {
+                    if (window.urlParams[key] && key !== 'email') {
                         formData.append(key, window.urlParams[key]);
                     }
                 });

@@ -41,39 +41,25 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // Function to convert HEIC to JPEG
-async function convertHeicToJpeg(inputPath, outputPath) {
+async function convertHeicToJpeg(inputBuffer) {
     try {
-        const inputBuffer = fs.readFileSync(inputPath);
         const outputBuffer = await heicConvert({
             buffer: inputBuffer,
             format: 'JPEG',
             quality: 0.9
         });
-        fs.writeFileSync(outputPath, outputBuffer);
-        return true;
+        return outputBuffer;
     } catch (error) {
         console.error('Error converting HEIC to JPEG:', error);
-        return false;
+        return null;
     }
 }
 
-app.use('/uploads', express.static(uploadsDir));
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadsDir);
-    },
-    filename: function (req, file, cb) {
-        const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.originalname)}`;
-        cb(null, uniqueName);
-    }
-});
-
+// Configure multer for memory storage (we'll store in DB)
 const upload = multer({ 
-    storage: storage,
+    storage: multer.memoryStorage(),
     limits: {
-        fileSize: 100 * 1024 * 1024, // 100MB limit for Railway Pro
+        fileSize: 500 * 1024 * 1024, // 500MB limit for Railway Pro
         files: 1 // Single file uploads
     },
     fileFilter: function (req, file, cb) {
@@ -96,7 +82,7 @@ const db = new sqlite3.Database(dbPath);
 // Set database timeout for high volume
 db.configure('busyTimeout', 30000);
 
-// Create testimonials table
+// Create testimonials table with media BLOB storage
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS testimonials (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,6 +92,7 @@ db.serialize(() => {
         testimonial_text TEXT,
         media_file TEXT,
         media_type TEXT,
+        media_data BLOB,
         first_name TEXT,
         last_name TEXT,
         current_flight_time TEXT,
@@ -116,6 +103,13 @@ db.serialize(() => {
         testimonial_type TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+    
+    // Add media_data column if it doesn't exist (for existing databases)
+    db.run(`ALTER TABLE testimonials ADD COLUMN media_data BLOB`, (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding media_data column:', err);
+        }
+    });
 });
 
 // Routes
@@ -139,6 +133,30 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// Serve media files from database
+app.get('/uploads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    
+    db.get('SELECT media_data, media_type FROM testimonials WHERE media_file = ?', [filename], (err, row) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).send('Database error');
+        }
+        
+        if (!row || !row.media_data) {
+            return res.status(404).send('File not found');
+        }
+        
+        // Set appropriate headers
+        res.setHeader('Content-Type', row.media_type);
+        res.setHeader('Content-Length', row.media_data.length);
+        res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+        
+        // Send the binary data
+        res.send(row.media_data);
+    });
+});
+
 // Handle video testimonial submission
 app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
     try {
@@ -155,19 +173,20 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
         } = req.body;
 
         const uuid = uuidv4();
-        const mediaFile = req.file ? req.file.filename : null;
+        const mediaFile = req.file ? `${Date.now()}-${uuidv4()}${path.extname(req.file.originalname)}` : null;
         const mediaType = req.file ? req.file.mimetype : null;
+        const mediaData = req.file ? req.file.buffer : null;
 
         const stmt = db.prepare(`
             INSERT INTO testimonials (
-                uuid, name, email, media_file, media_type, first_name, last_name,
-                current_flight_time, past_flight_time, use_case, weather_type,
-                extreme_conditions, testimonial_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                uuid, name, email, media_file, media_type, media_data,
+                first_name, last_name, current_flight_time, past_flight_time,
+                use_case, weather_type, extreme_conditions, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         stmt.run(
-            uuid, name, email, mediaFile, mediaType,
+            uuid, name, email, mediaFile, mediaType, mediaData,
             first_name, last_name, current_flight_time, past_flight_time,
             use_case, weather_type, extreme_conditions, 'video'
         );
@@ -206,35 +225,30 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
         } = req.body;
 
         const uuid = uuidv4();
-        let mediaFile = req.file ? req.file.filename : null;
+        let mediaFile = req.file ? `${Date.now()}-${uuidv4()}${path.extname(req.file.originalname)}` : null;
         let mediaType = req.file ? req.file.mimetype : null;
+        let mediaData = req.file ? req.file.buffer : null;
 
         // Convert HEIC to JPEG if needed
         if (req.file && (req.file.mimetype === 'image/heic' || req.file.mimetype === 'image/heif')) {
-            const originalPath = req.file.path;
-            const jpegPath = originalPath.replace(path.extname(originalPath), '.jpg');
-            
-            const success = await convertHeicToJpeg(originalPath, jpegPath);
-            if (success) {
-                // Update file info
-                mediaFile = path.basename(jpegPath);
+            const convertedBuffer = await convertHeicToJpeg(req.file.buffer);
+            if (convertedBuffer) {
+                mediaData = convertedBuffer;
                 mediaType = 'image/jpeg';
-                
-                // Remove original HEIC file
-                fs.unlinkSync(originalPath);
+                mediaFile = mediaFile.replace(path.extname(mediaFile), '.jpg');
             }
         }
 
         const stmt = db.prepare(`
             INSERT INTO testimonials (
-                uuid, name, email, testimonial_text, media_file, media_type,
+                uuid, name, email, testimonial_text, media_file, media_type, media_data,
                 first_name, last_name, current_flight_time, past_flight_time,
                 use_case, weather_type, extreme_conditions, testimonial_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         stmt.run(
-            uuid, name, email, testimonial, mediaFile, mediaType,
+            uuid, name, email, testimonial, mediaFile, mediaType, mediaData,
             first_name, last_name, current_flight_time, past_flight_time,
             use_case, weather_type, extreme_conditions, 'photo'
         );
@@ -344,7 +358,8 @@ app.get('/api/health', (req, res) => {
             'HEIC support with automatic conversion',
             'High volume optimized',
             'Railway Pro persistent storage',
-            'Compression enabled'
+            'Compression enabled',
+            'Media stored as BLOB in database'
         ]
     });
 });
@@ -357,7 +372,7 @@ app.get('/api/test-heic', (req, res) => {
             'HEIC files are accepted in uploads',
             'Automatic conversion to JPEG',
             'Preview support in admin dashboard',
-            'Original HEIC files are removed after conversion'
+            'Media stored as BLOB in database'
         ]
     });
 });
@@ -366,40 +381,16 @@ app.get('/api/test-heic', (req, res) => {
 app.delete('/api/testimonial/:uuid', (req, res) => {
     const { uuid } = req.params;
     
-    // First get the testimonial to find associated media file
-    db.get('SELECT * FROM testimonials WHERE uuid = ?', [uuid], (err, testimonial) => {
+    // Delete the testimonial from database (media data is automatically removed)
+    db.run('DELETE FROM testimonials WHERE uuid = ?', [uuid], function(err) {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
         }
-        if (!testimonial) {
-            res.status(404).json({ error: 'Testimonial not found' });
-            return;
-        }
         
-        // Delete the testimonial from database
-        db.run('DELETE FROM testimonials WHERE uuid = ?', [uuid], function(err) {
-            if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-            }
-            
-            // Delete associated media file if it exists
-            if (testimonial.media_file) {
-                const filePath = path.join(uploadsDir, testimonial.media_file);
-                fs.unlink(filePath, (err) => {
-                    // Don't fail if file deletion fails (file might not exist)
-                    if (err) {
-                        console.log('Warning: Could not delete media file:', err.message);
-                    }
-                });
-            }
-            
-            res.json({
-                success: true,
-                message: 'Testimonial deleted successfully',
-                deletedId: testimonial.id
-            });
+        res.json({
+            success: true,
+            message: 'Testimonial deleted successfully'
         });
     });
 });
@@ -420,4 +411,5 @@ app.listen(PORT, () => {
     console.log(`📁 Uploads: ${uploadsDir}`);
     console.log(`🌐 Visit http://localhost:${PORT} to view the testimonial forms`);
     console.log(`⚡ Optimized for high volume with Railway Pro`);
+    console.log(`💾 Media files now stored as BLOB in database for persistence`);
 }); 

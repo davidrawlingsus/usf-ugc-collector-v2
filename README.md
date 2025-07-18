@@ -53,7 +53,13 @@ Or for development with auto-restart:
 npm run dev
 ```
 
-### 3. Access the Application
+### 3. Additional Commands
+```bash
+npm run migrate    # Run media migration manually
+npm run test-media # Check media storage status
+```
+
+### 4. Access the Application
 
 - **Main site:** http://localhost:3000
 - **Admin dashboard:** http://localhost:3000/admin
@@ -81,8 +87,9 @@ The SQLite database stores testimonials with these fields:
 - `name` - Customer's full name
 - `email` - Customer's email address
 - `testimonial_text` - Written testimonial content
-- `media_file` - Filename of uploaded media
+- `media_file` - Filename of uploaded media (for URL generation)
 - `media_type` - MIME type of uploaded file
+- `media_data` - **BLOB data containing the actual media file**
 - `first_name`, `last_name` - Parsed from URL parameters
 - `current_flight_time`, `past_flight_time` - Flag usage data
 - `use_case`, `weather_type`, `extreme_conditions` - Context data
@@ -91,11 +98,12 @@ The SQLite database stores testimonials with these fields:
 
 ## File Storage
 
-- Media files are stored in the `uploads/` directory
+- **Media files are stored as BLOB data in the SQLite database** for maximum persistence
 - Files are renamed with timestamps and UUIDs for security
 - Supported formats: Video (mp4, mov, etc.) and Images (jpg, png, heic, heif, etc.)
 - HEIC/HEIF files are automatically converted to JPEG for web compatibility
-- Maximum file size: 50MB
+- Maximum file size: 500MB (optimized for Railway Pro, handles longer mobile videos)
+- **Automatic migration** of existing filesystem-stored media to database on deployment
 
 ## Mobile Device Support
 
@@ -121,25 +129,17 @@ The admin dashboard at `/admin` provides:
 
 ## Production Deployment
 
-### Option 1: Heroku
-```bash
-# Add to package.json
-"engines": {
-  "node": "18.x"
-}
-
-# Deploy
-git push heroku main
-```
-
-### Option 2: DigitalOcean App Platform
-- Connect GitHub repository
-- Set build command: `npm install`
-- Set run command: `npm start`
-
-### Option 3: Railway
+### Railway (Recommended)
 - Connect GitHub repository
 - Automatic deployment on push
+- **Persistent storage** with Railway volumes for database
+- **Media files stored in database** for deployment persistence
+- **Automatic migration** of existing media files
+- Connect GitHub repository
+- Automatic deployment on push
+- **Persistent storage** with Railway volumes for database
+- **Media files stored in database** for deployment persistence
+- **Automatic migration** of existing media files
 
 ## Environment Variables
 
@@ -153,7 +153,7 @@ NODE_ENV=production
 ## Security Features
 
 - **File type validation** - Only allows video and image files
-- **File size limits** - 50MB maximum per file
+- **File size limits** - 500MB maximum per file
 - **Unique filenames** - Prevents filename conflicts
 - **SQL injection protection** - Uses parameterized queries
 - **CORS enabled** - For cross-origin requests
@@ -164,14 +164,19 @@ NODE_ENV=production
 ```
 ├── server.js              # Main Express server
 ├── package.json           # Dependencies and scripts
-├── testimonials.db        # SQLite database (auto-created)
-├── uploads/              # Media file storage
-├── index.html            # Main navigation page
-├── video_collector.html  # Video testimonial form
+├── railway.json           # Railway deployment config
+├── deploy.sh              # Deployment script with migration
+├── migrate-media.js       # Media migration script
+├── test-media.js          # Media testing script
+├── data/                  # Database storage directory
+├── uploads/               # Media storage directory
+├── index.html             # Main navigation page
+├── video_collector.html   # Video testimonial form
 ├── photo_testimonial.html # Photo testimonial form
 ├── written_testimonial.html # Written testimonial form
-├── admin.html            # Admin dashboard
-└── README.md             # This file
+├── admin.html             # Admin dashboard
+├── README.md              # This file
+└── DEPLOYMENT.md          # Deployment guide
 ```
 
 ### Adding New Features
@@ -186,9 +191,11 @@ NODE_ENV=production
 ### Common Issues
 
 1. **Port already in use:** Change PORT in .env or kill existing process
-2. **File upload fails:** Check uploads/ directory permissions
-3. **Database errors:** Delete testimonials.db to reset
+2. **File upload fails:** Check data/ directory permissions
+3. **Database errors:** Delete data/testimonials.db to reset
 4. **Mobile camera not working:** Ensure HTTPS in production
+5. **Media not loading:** Run `npm run test-media` to check storage status
+6. **Migration errors:** Check logs for duplicate column errors (handled automatically)
 
 ### Logs
 
