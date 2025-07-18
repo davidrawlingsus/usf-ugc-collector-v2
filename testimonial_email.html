@@ -198,6 +198,13 @@
             padding: 20px;
             margin: 20px 0;
             border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .how-it-works-content {
+            flex: 1;
         }
         
         .how-it-works h3 {
@@ -231,6 +238,22 @@
         .step-text {
             color: #065f46;
             flex: 1;
+        }
+        
+        .how-it-works-image {
+            flex-shrink: 0;
+            width: 150px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .how-it-works-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .footer {
@@ -364,6 +387,17 @@
             .prize-icon {
                 margin-bottom: 8px;
             }
+            
+            .how-it-works {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .how-it-works-image {
+                width: 100%;
+                max-width: 250px;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -439,26 +473,32 @@
             </div>
             
             <div class="how-it-works">
-                <h3>How It Works</h3>
-                
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-text">Click the button below to access our testimonial form</div>
+                <div class="how-it-works-content">
+                    <h3>How It Works</h3>
+                    
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Click the button below to access our testimonial form</div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Record a short video (30-60 seconds) or take a photo with your testimonial</div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Submit your testimonial and you're automatically entered to win!</div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Winners will be notified by email within 30 days</div>
+                    </div>
                 </div>
                 
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-text">Record a short video (30-60 seconds) or take a photo with your testimonial</div>
-                </div>
-                
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-text">Submit your testimonial and you're automatically entered to win!</div>
-                </div>
-                
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <div class="step-text">Winners will be notified by email within 30 days</div>
+                <div class="how-it-works-image">
+                    <img src="https://usf-testimonial-collector-production.up.railway.app/assets/4b3d7a73-c188-4c5c-aa14-8eee8e4a17ba" alt="How It Works Illustration">
                 </div>
             </div>
             
