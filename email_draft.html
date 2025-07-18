@@ -228,6 +228,91 @@
             font-size: 0.9rem;
         }
         
+        /* Merge Fields Demo Styles */
+        .merge-fields-demo {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .toggle-btn {
+            background: none;
+            color: #1e3a8a;
+            border: none;
+            padding: 12px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+        
+        .toggle-btn:hover {
+            color: #162d59;
+        }
+        
+        .merge-fields-panel {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .merge-fields-panel h3 {
+            font-family: 'Spectral', serif;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .field-group {
+            margin-bottom: 15px;
+        }
+        
+        .field-group label {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .field-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .field-group input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+        
+        .apply-btn {
+            background: #162d59;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .apply-btn:hover {
+            background: #1e3a8a;
+        }
+        
         @media (max-width: 600px) {
             .email-container {
                 margin: 0;
@@ -259,6 +344,30 @@
     </style>
 </head>
 <body>
+    <div class="merge-fields-demo">
+        <button id="toggleMergeFields" class="toggle-btn">Merge Fields</button>
+        <div id="mergeFieldsPanel" class="merge-fields-panel" style="display: none;">
+            <h3>Test Merge Fields</h3>
+            <div class="field-group">
+                <label for="timeSincePurchase">Time Since Purchase:</label>
+                <input type="text" id="timeSincePurchase" value="6 months" placeholder="e.g., 6 months">
+            </div>
+            <div class="field-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" value="David" placeholder="e.g., David">
+            </div>
+            <div class="field-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" value="Rawlings" placeholder="e.g., Rawlings">
+            </div>
+            <div class="field-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="david@rawlings.us" placeholder="e.g., david@rawlings.us">
+            </div>
+            <button id="applyMergeFields" class="apply-btn">Apply Merge Fields</button>
+        </div>
+    </div>
+    
     <div class="email-container">
         <div class="logo-container">
             <div class="flag-icon">
@@ -267,16 +376,16 @@
         </div>
         <div class="header">
             <h1>How's Your Super Tough Flag Holding Up?</h1>
-            <p>We'd love to hear from you, {{first_name}}!</p>
+            <p>We'd love to hear from you, <span id="first_name_placeholder">{{first_name}}</span>!</p>
         </div>
         
         <div class="content">
             <div class="greeting">
-                Hi {{first_name}},
+                Hi <span id="greeting_first_name_placeholder">{{first_name}}</span>,
             </div>
             
             <div class="main-text">
-                It's been {{time_since_purchase}} since you got your Super Tough flag from us, and we're curious – how's it performing?
+                It's been <span id="time_since_purchase_placeholder">{{time_since_purchase}}</span> since you got your Super Tough flag from us, and we're curious – how's it performing?
             </div>
             
             <div class="main-text">
@@ -295,7 +404,7 @@
             <div class="cta-section">
                 <h3 style="color: #1e3a8a; margin-bottom: 15px;">Share Your Experience</h3>
                 <p style="margin-bottom: 15px; color: #4a5568;">Take our quick 2-minute survey about your flag's performance</p>
-                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button">Start Survey</a>
+                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta1">Start Survey</a>
             </div>
             
             <div class="prizes-section">
@@ -333,7 +442,7 @@
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button">Take the 2-Minute Survey</a>
+                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta2">Take the 2-Minute Survey</a>
             </div>
             
             <div class="main-text" style="margin-top: 30px;">
@@ -357,5 +466,48 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Merge Fields Demo Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleMergeFields');
+            const mergePanel = document.getElementById('mergeFieldsPanel');
+            const applyBtn = document.getElementById('applyMergeFields');
+            
+            // Toggle merge fields panel
+            toggleBtn.addEventListener('click', function() {
+                if (mergePanel.style.display === 'none') {
+                    mergePanel.style.display = 'block';
+                    toggleBtn.textContent = 'Hide Merge Fields';
+                } else {
+                    mergePanel.style.display = 'none';
+                    toggleBtn.textContent = 'Merge Fields';
+                }
+            });
+            
+            // Apply merge fields
+            applyBtn.addEventListener('click', function() {
+                const timeSincePurchase = document.getElementById('timeSincePurchase').value;
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                
+                // Update placeholders in email content
+                document.getElementById('first_name_placeholder').textContent = firstName;
+                document.getElementById('greeting_first_name_placeholder').textContent = firstName;
+                document.getElementById('time_since_purchase_placeholder').textContent = timeSincePurchase;
+                
+                // Update CTA URLs with merge fields
+                const baseUrl = 'https://form.typeform.com/to/p8Y3kpxF#';
+                const params = `time_since_purchase=${encodeURIComponent(timeSincePurchase)}&first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`;
+                
+                document.getElementById('cta1').href = baseUrl + params;
+                document.getElementById('cta2').href = baseUrl + params;
+                
+                // Show success message
+                alert('Merge fields applied! The email now shows personalized content and the CTA buttons link to the Typeform with your data.');
+            });
+        });
+    </script>
 </body>
 </html>
