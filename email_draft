@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How's Your Super Tough Flag Holding Up?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+        }
+        
+        .flag-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px 25px;
+        }
+        
+        .greeting {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        
+        .main-text {
+            font-size: 1rem;
+            margin-bottom: 25px;
+            color: #4a5568;
+        }
+        
+        .cta-section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #dc2626;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: #b91c1c;
+        }
+        
+        .prizes-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .prizes-title {
+            color: #92400e;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .prize-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 6px;
+        }
+        
+        .prize-icon {
+            font-size: 1.5rem;
+            margin-right: 12px;
+            width: 35px;
+            text-align: center;
+        }
+        
+        .prize-text {
+            flex: 1;
+            color: #78350f;
+        }
+        
+        .prize-text strong {
+            color: #92400e;
+        }
+        
+        .time-sensitive {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .time-sensitive-text {
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .time-sensitive-sub {
+            color: #7f1d1d;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            background: #f8fafc;
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer-text {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .unsubscribe {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        .social-proof {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .social-proof-text {
+            color: #047857;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .social-proof-author {
+            color: #065f46;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .prize-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .prize-icon {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <span class="flag-icon">🇺🇸</span>
+            <h1>How's Your Super Tough Flag Holding Up?</h1>
+            <p>We'd love to hear from you, {{first_name}}!</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Hi {{first_name}},
+            </div>
+            
+            <div class="main-text">
+                It's been {{time_since_purchase}} since you got your Super Tough flag from us, and we're curious – how's it performing?
+            </div>
+            
+            <div class="main-text">
+                We're passionate about making the highest quality American flags, and your real-world experience helps us continue improving and helps fellow Americans choose flags they can count on.
+            </div>
+            
+            <div class="social-proof">
+                <div class="social-proof-text">
+                    "After 8 months of Texas heat and storms, the colors are still vibrant and no fraying at all. Best flag I've ever owned!"
+                </div>
+                <div class="social-proof-author">
+                    — Sarah M., Dallas, TX
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px;">Share Your Experience</h3>
+                <p style="margin-bottom: 15px; color: #4a5568;">Take our quick 2-minute survey about your flag's performance</p>
+                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button">Start Survey</a>
+            </div>
+            
+            <div class="prizes-section">
+                <div class="prizes-title">🎁 Thank You Prizes</div>
+                
+                <div class="prize-item">
+                    <div class="prize-icon">📊</div>
+                    <div class="prize-text">
+                        <strong>Answer Questions:</strong> Get 1 entry per question (up to 10 entries) for a <strong>$1,000 Amazon Gift Card</strong>
+                    </div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-icon">🎬</div>
+                    <div class="prize-text">
+                        <strong>Leave a Testimonial:</strong> Win a <strong>Super Tough Flag every 6 months for LIFE</strong>
+                    </div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-icon">🏆</div>
+                    <div class="prize-text">
+                        <strong>Everyone wins:</strong> You're helping fellow Americans choose quality flags that last
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-sensitive">
+                <div class="time-sensitive-text">⏰ Survey closes in 7 days</div>
+                <div class="time-sensitive-sub">Don't miss your chance to win!</div>
+            </div>
+            
+            <div class="main-text">
+                Whether your flag exceeded expectations or needs improvement, we want to hear from you. Your honest feedback drives everything we do.
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button">Take the 2-Minute Survey</a>
+            </div>
+            
+            <div class="main-text" style="margin-top: 30px;">
+                Thanks for choosing Super Tough flags and for flying the stars and stripes with pride!
+            </div>
+            
+            <div style="margin-top: 25px; color: #4a5568;">
+                Best regards,<br>
+                <strong>The Super Tough Flag Team</strong><br>
+                United-States-Flag.com
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-text">
+                Questions? Reply to this email or visit our <a href="{{support_link}}" style="color: #1e3a8a;">Help Center</a>
+            </div>
+            <div class="footer-text">
+                <a href="{{unsubscribe_link}}" class="unsubscribe">Unsubscribe</a> | 
+                <a href="{{preferences_link}}" class="unsubscribe">Email Preferences</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

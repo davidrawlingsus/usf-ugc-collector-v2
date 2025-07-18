@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Super Tough Flag Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .flag-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .upload-section {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .upload-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .upload-btn {
+            background: #059669;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-btn:hover {
+            background: #047857;
+        }
+        
+        .file-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+        }
+        
+        .file-preview {
+            margin-top: 15px;
+            padding: 10px;
+            background: #ecfdf5;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #b91c1c;
+        }
+        
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .prompts {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .prompts h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .prompts ul {
+            color: #78350f;
+            font-size: 0.9rem;
+            padding-left: 20px;
+        }
+        
+        .prompts li {
+            margin-bottom: 5px;
+        }
+        
+        .optional-note {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: #0c4a6e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="flag-icon">🇺🇸</div>
+            <h1>Share Your Photo Testimonial</h1>
+            <p class="subtitle">Write about your Super Tough flag experience and share a photo</p>
+        </div>
+        
+        <form id="testimonialForm">
+            <div class="form-group">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="testimonial">Your Testimonial *</label>
+                <textarea id="testimonial" name="testimonial" placeholder="Share your experience with your Super Tough flag..." required></textarea>
+            </div>
+            
+            <div class="upload-section">
+                <h3>📸 Share a Photo (Optional)</h3>
+                <p>Upload a photo of your flag or your experience</p>
+                
+                <div class="optional-note">
+                    💡 Photo is optional - you can submit without one
+                </div>
+                
+                <div class="upload-buttons">
+                    <button type="button" class="upload-btn" onclick="document.getElementById('photoInput').click()">
+                        📸 Take/Upload Photo
+                    </button>
+                </div>
+                
+                <input type="file" id="photoInput" class="file-input" accept="image/*,.heic,.heif" capture="environment">
+                
+                <div id="filePreview" class="file-preview">
+                    <span id="fileName"></span>
+                </div>
+            </div>
+            
+            <div class="prompts">
+                <h3>💡 What to include in your testimonial:</h3>
+                <ul>
+                    <li>How long your flag has been flying</li>
+                    <li>What feature impressed you most (color retention, durability, etc.)</li>
+                    <li>How it compares to previous flags you've owned</li>
+                    <li>Whether you'd recommend it to others and why</li>
+                    <li>Any specific stories or experiences with your flag</li>
+                </ul>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                📤 Submit My Photo Testimonial
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        let selectedFile = null;
+        
+        // URL parameter parsing function
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+        
+        // Pre-populate form fields from URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstName = getUrlParameter('first_name');
+            const lastName = getUrlParameter('last_name');
+            const email = getUrlParameter('email');
+            const currentFlightTime = getUrlParameter('current_flight_time');
+            const pastFlightTime = getUrlParameter('past_flight_time');
+            const useCase = getUrlParameter('use_case');
+            const weatherType = getUrlParameter('weather_type');
+            const extremeConditions = getUrlParameter('extreme_conditions');
+            
+            // Combine first and last name
+            if (firstName || lastName) {
+                const fullName = [firstName, lastName].filter(Boolean).join(' ');
+                document.getElementById('name').value = fullName;
+            }
+            
+            // Set email if provided
+            if (email) {
+                document.getElementById('email').value = email;
+            }
+            
+            // Store additional parameters for submission
+            window.urlParams = {
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                current_flight_time: currentFlightTime,
+                past_flight_time: pastFlightTime,
+                use_case: useCase,
+                weather_type: weatherType,
+                extreme_conditions: extremeConditions
+            };
+        });
+        
+        // Handle file selection
+        function handleFileSelect(input, type) {
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    selectedFile = file;
+                    const preview = document.getElementById('filePreview');
+                    const fileName = document.getElementById('fileName');
+                    
+                    fileName.textContent = `${type} selected: ${file.name}`;
+                    preview.style.display = 'block';
+                }
+            });
+        }
+        
+        // Initialize file input
+        handleFileSelect(document.getElementById('photoInput'), 'Photo');
+        
+        // Handle form submission
+        document.getElementById('testimonialForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('testimonial', document.getElementById('testimonial').value);
+            
+            // Add photo file if selected
+            if (selectedFile) {
+                formData.append('photo', selectedFile);
+            }
+            
+            // Add URL parameters (but don't override form fields)
+            if (window.urlParams) {
+                Object.keys(window.urlParams).forEach(key => {
+                    if (window.urlParams[key] && key !== 'email' && key !== 'name') {
+                        formData.append(key, window.urlParams[key]);
+                    }
+                });
+            }
+            
+            // Submit to backend
+            fetch('/submit-photo-testimonial', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you! Your photo testimonial has been submitted successfully. You\'ll be entered in our lifetime supply giveaway!');
+                    
+                    // Reset form
+                    this.reset();
+                    selectedFile = null;
+                    document.getElementById('filePreview').style.display = 'none';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit My Photo Testimonial';
+                } else {
+                    throw new Error(data.message || 'Submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Sorry, there was an error submitting your testimonial. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit My Photo Testimonial';
+            });
+        });
+    </script>
+</body>
+</html> 
