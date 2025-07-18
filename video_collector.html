@@ -216,6 +216,25 @@
         .prompts li {
             margin-bottom: 5px;
         }
+        
+        .prompt-image {
+            width: 35%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .prompt-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .prompt-header h3 {
+            margin-bottom: 0;
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -264,7 +283,10 @@
             </div>
             
             <div class="prompts">
-                <h3>💡 What to include in your 30-60 second video:</h3>
+                <div class="prompt-header">
+                    <img src="https://usf-testimonial-collector-production.up.railway.app/assets/4b3d7a73-c188-4c5c-aa14-8eee8e4a17ba" alt="Video testimonial example" class="prompt-image">
+                    <h3>💡 What to include in your 30-60 second video:</h3>
+                </div>
                 <ul>
                     <li>How long your flag has been flying</li>
                     <li>What feature impressed you most (color retention, durability, etc.)</li>
