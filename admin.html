@@ -222,6 +222,21 @@
             background: #000;
         }
         
+        .video-fallback {
+            width: 100%;
+            height: 200px;
+            background: #1f2937;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+            cursor: pointer;
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -486,18 +501,38 @@
                                 </a>
                             `;
                         } else if (testimonial.media_type && testimonial.media_type.startsWith('video/')) {
-                            // Video preview
-                            mediaHtml = `
-                                <div class="media-preview">
-                                    <video controls preload="metadata">
-                                        <source src="${mediaUrl}" type="${testimonial.media_type}">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                                <a href="${mediaUrl}" target="_blank" class="media-link">
-                                    📎 Download Video
-                                </a>
-                            `;
+                            // Video preview with fallback
+                            const isSupportedFormat = testimonial.media_type.includes('mp4') || testimonial.media_type.includes('webm') || testimonial.media_type.includes('ogg');
+                            
+                            if (isSupportedFormat) {
+                                mediaHtml = `
+                                    <div class="media-preview">
+                                        <video controls preload="metadata" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
+                                            <source src="${mediaUrl}" type="${testimonial.media_type}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    <a href="${mediaUrl}" target="_blank" class="media-link">
+                                        📎 Download Video
+                                    </a>
+                                `;
+                            } else {
+                                // Fallback for unsupported formats like .MOV
+                                mediaHtml = `
+                                    <div class="media-preview">
+                                        <div class="video-fallback" onclick="openModal('${mediaUrl}', '${testimonial.media_type}', '${testimonial.media_file}')">
+                                            <div>
+                                                <div style="font-size: 2rem; margin-bottom: 10px;">🎬</div>
+                                                <div>Video Format: ${testimonial.media_type}</div>
+                                                <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Click to download</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="${mediaUrl}" target="_blank" class="media-link">
+                                        📎 Download Video
+                                    </a>
+                                `;
+                            }
                         } else {
                             // Fallback for unknown media types
                             mediaHtml = `
