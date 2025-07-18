@@ -13,6 +13,7 @@ A complete testimonial collection system with file upload, database storage, and
 - **URL parameter parsing** for pre-populated form fields
 - **Native camera integration** for iPhone and Android devices
 - **File upload handling** with secure storage
+- **HEIC image support** with automatic conversion to JPEG
 - **SQLite database** for testimonial storage
 - **Admin dashboard** to view and manage submissions
 - **Real-time form validation** and error handling
@@ -92,7 +93,8 @@ The SQLite database stores testimonials with these fields:
 
 - Media files are stored in the `uploads/` directory
 - Files are renamed with timestamps and UUIDs for security
-- Supported formats: Video (mp4, mov, etc.) and Images (jpg, png, etc.)
+- Supported formats: Video (mp4, mov, etc.) and Images (jpg, png, heic, heif, etc.)
+- HEIC/HEIF files are automatically converted to JPEG for web compatibility
 - Maximum file size: 50MB
 
 ## Mobile Device Support

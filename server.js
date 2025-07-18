@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const sqlite3 = require('sqlite3').verbose();
+const sharp = require('sharp');
+const heicConvert = require('heic-convert');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +29,23 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+// Function to convert HEIC to JPEG
+async function convertHeicToJpeg(inputPath, outputPath) {
+    try {
+        const inputBuffer = fs.readFileSync(inputPath);
+        const outputBuffer = await heicConvert({
+            buffer: inputBuffer,
+            format: 'JPEG',
+            quality: 0.9
+        });
+        fs.writeFileSync(outputPath, outputBuffer);
+        return true;
+    } catch (error) {
+        console.error('Error converting HEIC to JPEG:', error);
+        return false;
+    }
+}
+
 app.use('/uploads', express.static(uploadsDir));
 
 // Configure multer for file uploads
@@ -46,8 +65,11 @@ const upload = multer({
         fileSize: 50 * 1024 * 1024 // 50MB limit
     },
     fileFilter: function (req, file, cb) {
-        // Allow videos and images
-        if (file.mimetype.startsWith('video/') || file.mimetype.startsWith('image/')) {
+        // Allow videos and images (including HEIC)
+        if (file.mimetype.startsWith('video/') || 
+            file.mimetype.startsWith('image/') || 
+            file.mimetype === 'image/heic' || 
+            file.mimetype === 'image/heif') {
             cb(null, true);
         } else {
             cb(new Error('Only video and image files are allowed!'), false);
@@ -153,7 +175,7 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
 });
 
 // Handle photo testimonial submission
-app.post('/submit-photo-testimonial', upload.single('photo'), (req, res) => {
+app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) => {
     try {
         const {
             name,
@@ -169,8 +191,24 @@ app.post('/submit-photo-testimonial', upload.single('photo'), (req, res) => {
         } = req.body;
 
         const uuid = uuidv4();
-        const mediaFile = req.file ? req.file.filename : null;
-        const mediaType = req.file ? req.file.mimetype : null;
+        let mediaFile = req.file ? req.file.filename : null;
+        let mediaType = req.file ? req.file.mimetype : null;
+
+        // Convert HEIC to JPEG if needed
+        if (req.file && (req.file.mimetype === 'image/heic' || req.file.mimetype === 'image/heif')) {
+            const originalPath = req.file.path;
+            const jpegPath = originalPath.replace(path.extname(originalPath), '.jpg');
+            
+            const success = await convertHeicToJpeg(originalPath, jpegPath);
+            if (success) {
+                // Update file info
+                mediaFile = path.basename(jpegPath);
+                mediaType = 'image/jpeg';
+                
+                // Remove original HEIC file
+                fs.unlinkSync(originalPath);
+            }
+        }
 
         const stmt = db.prepare(`
             INSERT INTO testimonials (
@@ -276,6 +314,19 @@ app.get('/api/testimonial/:uuid', (req, res) => {
             return;
         }
         res.json(row);
+    });
+});
+
+// Test endpoint for HEIC conversion
+app.get('/api/test-heic', (req, res) => {
+    res.json({
+        message: 'HEIC support is enabled',
+        features: [
+            'HEIC files are accepted in uploads',
+            'Automatic conversion to JPEG',
+            'Preview support in admin dashboard',
+            'Original HEIC files are removed after conversion'
+        ]
     });
 });
 

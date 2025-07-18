@@ -429,8 +429,8 @@
                     if (testimonial.media_file) {
                         const mediaUrl = `/uploads/${testimonial.media_file}`;
                         
-                        if (testimonial.media_type && testimonial.media_type.startsWith('image/')) {
-                            // Image preview
+                        if (testimonial.media_type && (testimonial.media_type.startsWith('image/') || testimonial.media_type === 'image/heic' || testimonial.media_type === 'image/heif')) {
+                            // Image preview (including HEIC)
                             mediaHtml = `
                                 <div class="testimonial-media">
                                     <div class="media-preview">
