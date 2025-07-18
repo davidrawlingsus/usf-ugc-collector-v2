@@ -4,9 +4,9 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const sqlite3 = require('sqlite3').verbose();
 const sharp = require('sharp');
 const heicConvert = require('heic-convert');
+const { db, run, get, all, prepare, initPromise } = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -75,42 +75,18 @@ const upload = multer({
     }
 });
 
-// Initialize SQLite database with persistent path
-const dbPath = path.join(dataDir, 'testimonials.db');
-const db = new sqlite3.Database(dbPath);
+// Database initialization is handled in database.js
 
-// Set database timeout for high volume
-db.configure('busyTimeout', 30000);
-
-// Create testimonials table with media BLOB storage
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS testimonials (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        uuid TEXT UNIQUE,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        testimonial_text TEXT,
-        media_file TEXT,
-        media_type TEXT,
-        media_data BLOB,
-        first_name TEXT,
-        last_name TEXT,
-        current_flight_time TEXT,
-        past_flight_time TEXT,
-        use_case TEXT,
-        weather_type TEXT,
-        extreme_conditions TEXT,
-        testimonial_type TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-    
-    // Add media_data column if it doesn't exist (for existing databases)
-    db.run(`ALTER TABLE testimonials ADD COLUMN media_data BLOB`, (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding media_data column:', err);
-        }
-    });
-});
+// Middleware to ensure database is ready (commented out for debugging)
+// app.use(async (req, res, next) => {
+//     try {
+//         await initPromise;
+//         next();
+//     } catch (error) {
+//         console.error('Database not ready:', error);
+//         res.status(503).json({ error: 'Database not ready' });
+//     }
+// });
 
 // Routes
 app.get('/', (req, res) => {
@@ -137,7 +113,7 @@ app.get('/admin', (req, res) => {
 app.get('/uploads/:filename', (req, res) => {
     const filename = req.params.filename;
     
-    db.get('SELECT media_data, media_type FROM testimonials WHERE media_file = ?', [filename], (err, row) => {
+    get('SELECT media_data, media_type FROM testimonials WHERE media_file = ?', [filename], (err, row) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).send('Database error');
@@ -177,7 +153,7 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
         const mediaType = req.file ? req.file.mimetype : null;
         const mediaData = req.file ? req.file.buffer : null;
 
-        const stmt = db.prepare(`
+        const stmt = prepare(`
             INSERT INTO testimonials (
                 uuid, name, email, media_file, media_type, media_data,
                 first_name, last_name, current_flight_time, past_flight_time,
@@ -185,13 +161,15 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
-        stmt.run(
+        stmt.run([
             uuid, name, email, mediaFile, mediaType, mediaData,
             first_name, last_name, current_flight_time, past_flight_time,
             use_case, weather_type, extreme_conditions, 'video'
-        );
-
-        stmt.finalize();
+        ], (err) => {
+            if (err) {
+                console.error('Error inserting video testimonial:', err);
+            }
+        });
 
         res.json({
             success: true,
@@ -239,7 +217,7 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
             }
         }
 
-        const stmt = db.prepare(`
+        const stmt = prepare(`
             INSERT INTO testimonials (
                 uuid, name, email, testimonial_text, media_file, media_type, media_data,
                 first_name, last_name, current_flight_time, past_flight_time,
@@ -247,13 +225,15 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
-        stmt.run(
+        stmt.run([
             uuid, name, email, testimonial, mediaFile, mediaType, mediaData,
             first_name, last_name, current_flight_time, past_flight_time,
             use_case, weather_type, extreme_conditions, 'photo'
-        );
-
-        stmt.finalize();
+        ], (err) => {
+            if (err) {
+                console.error('Error inserting photo testimonial:', err);
+            }
+        });
 
         res.json({
             success: true,
@@ -288,7 +268,7 @@ app.post('/submit-written-testimonial', (req, res) => {
 
         const uuid = uuidv4();
 
-        const stmt = db.prepare(`
+        const stmt = prepare(`
             INSERT INTO testimonials (
                 uuid, name, email, testimonial_text, first_name, last_name,
                 current_flight_time, past_flight_time, use_case, weather_type,
@@ -296,13 +276,15 @@ app.post('/submit-written-testimonial', (req, res) => {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
-        stmt.run(
+        stmt.run([
             uuid, name, email, testimonial,
             first_name, last_name, current_flight_time, past_flight_time,
             use_case, weather_type, extreme_conditions, 'written'
-        );
-
-        stmt.finalize();
+        ], (err) => {
+            if (err) {
+                console.error('Error inserting written testimonial:', err);
+            }
+        });
 
         res.json({
             success: true,
@@ -321,11 +303,16 @@ app.post('/submit-written-testimonial', (req, res) => {
 
 // Get all testimonials (for admin purposes)
 app.get('/api/testimonials', (req, res) => {
-    db.all('SELECT * FROM testimonials ORDER BY created_at DESC', (err, rows) => {
+    console.log('📊 Admin dashboard requesting testimonials...');
+    all('SELECT * FROM testimonials ORDER BY created_at DESC', [], (err, rows) => {
         if (err) {
+            console.error('❌ Error fetching testimonials:', err);
             res.status(500).json({ error: err.message });
             return;
         }
+        // Ensure rows is an array
+        rows = rows || [];
+        console.log(`✅ Returning ${rows.length} testimonials to admin dashboard`);
         res.json(rows);
     });
 });
@@ -333,8 +320,9 @@ app.get('/api/testimonials', (req, res) => {
 // Get testimonial by UUID
 app.get('/api/testimonial/:uuid', (req, res) => {
     const { uuid } = req.params;
-    db.get('SELECT * FROM testimonials WHERE uuid = ?', [uuid], (err, row) => {
+    get('SELECT * FROM testimonials WHERE uuid = ?', [uuid], (err, row) => {
         if (err) {
+            console.error('Error fetching testimonial:', err);
             res.status(500).json({ error: err.message });
             return;
         }
@@ -352,7 +340,6 @@ app.get('/api/health', (req, res) => {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || 'development',
-        database: dbPath,
         uploads: uploadsDir,
         features: [
             'HEIC support with automatic conversion',
@@ -361,6 +348,24 @@ app.get('/api/health', (req, res) => {
             'Compression enabled',
             'Media stored as BLOB in database'
         ]
+    });
+});
+
+// Test database endpoint
+app.get('/api/test-db', (req, res) => {
+    console.log('🧪 Testing database connection...');
+    all('SELECT COUNT(*) as count FROM testimonials', [], (err, rows) => {
+        if (err) {
+            console.error('❌ Database test error:', err);
+            res.status(500).json({ error: err.message });
+        } else {
+            console.log('✅ Database test result:', rows);
+            res.json({ 
+                message: 'Database test successful',
+                count: rows[0] ? rows[0].count : 0,
+                rows: rows
+            });
+        }
     });
 });
 
@@ -382,8 +387,9 @@ app.delete('/api/testimonial/:uuid', (req, res) => {
     const { uuid } = req.params;
     
     // Delete the testimonial from database (media data is automatically removed)
-    db.run('DELETE FROM testimonials WHERE uuid = ?', [uuid], function(err) {
+    run('DELETE FROM testimonials WHERE uuid = ?', [uuid], function(err) {
         if (err) {
+            console.error('Error deleting testimonial:', err);
             res.status(500).json({ error: err.message });
             return;
         }
@@ -407,7 +413,6 @@ app.use((error, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`💾 Database: ${dbPath}`);
     console.log(`📁 Uploads: ${uploadsDir}`);
     console.log(`🌐 Visit http://localhost:${PORT} to view the testimonial forms`);
     console.log(`⚡ Optimized for high volume with Railway Pro`);

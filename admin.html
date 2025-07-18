@@ -490,26 +490,26 @@
     <div class="container">
         <div class="header">
             <div class="flag-icon">🇺🇸</div>
-            <h1>Testimonial Admin Dashboard</h1>
-            <p class="subtitle">View and manage submitted testimonials</p>
+            <h1>Super Tough UGC Admin Dashboard</h1>
+            <p class="subtitle">View and manage submitted UGC</p>
         </div>
         
         <div class="stats" id="stats">
             <div class="stat-card">
                 <div class="stat-number" id="totalCount">-</div>
-                <div class="stat-label">Total Testimonials</div>
+                <div class="stat-label">Total UGC</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="videoCount">-</div>
-                <div class="stat-label">Video Testimonials</div>
+                <div class="stat-label">Video UGC</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="photoCount">-</div>
-                <div class="stat-label">Photo Testimonials</div>
+                <div class="stat-label">Photo UGC</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="writtenCount">-</div>
-                <div class="stat-label">Written Testimonials</div>
+                <div class="stat-label">Written UGC</div>
             </div>
         </div>
         
@@ -582,9 +582,9 @@
             <div class="active-filters" id="activeFilters"></div>
         </div>
         
-        <div class="testimonials" id="testimonials">
-            <div class="loading">Loading testimonials...</div>
-        </div>
+                    <div class="testimonials" id="testimonials">
+                <div class="loading">Loading UGC...</div>
+            </div>
         
         <div class="success-message" id="successMessage"></div>
     </div>
@@ -798,7 +798,7 @@
             testimonialsContainer.innerHTML = '';
             
             if (testimonials.length === 0) {
-                testimonialsContainer.innerHTML = '<div class="loading">No testimonials match the current filters.</div>';
+                testimonialsContainer.innerHTML = '<div class="loading">No UGC match the current filters.</div>';
                 return;
             }
             
@@ -933,13 +933,13 @@
                 console.error('Error loading testimonials:', error);
                 document.getElementById('testimonials').innerHTML = `
                     <div class="error">
-                        Error loading testimonials. Please check the server connection.
+                        Error loading UGC. Please check the server connection.
                     </div>
                 `;
             }
         }
         
-        // Load testimonials on page load
+        // Load UGC on page load
         document.addEventListener('DOMContentLoaded', loadTestimonials);
         
         // Refresh every 30 seconds

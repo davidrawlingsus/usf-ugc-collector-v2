@@ -1,39 +1,24 @@
-const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
+const { db, run, all, initPromise } = require('./database');
 
 // Use the same paths as the main server
 const persistentDir = process.env.RAILWAY_VOLUME_MOUNT_PATH ? '/app' : './';
-const dataDir = path.join(persistentDir, 'data');
 const uploadsDir = path.join(persistentDir, 'uploads');
 
-const dbPath = path.join(dataDir, 'testimonials.db');
-const db = new sqlite3.Database(dbPath);
-
 console.log('🔄 Starting media migration...');
-console.log('Database path:', dbPath);
 console.log('Uploads directory:', uploadsDir);
 
-// Ensure media_data column exists
-db.serialize(() => {
-    db.run(`ALTER TABLE testimonials ADD COLUMN media_data BLOB`, (err) => {
-        if (err) {
-            if (err.message.includes('duplicate column name')) {
-                console.log('✅ media_data column already exists');
-            } else {
-                console.error('Error adding media_data column:', err);
-            }
-        } else {
-            console.log('✅ media_data column added successfully');
-        }
-    });
-});
+// Wait for database to be ready
+function waitForDatabase() {
+    return initPromise;
+}
 
 // Function to migrate media files
 function migrateMediaFiles() {
     return new Promise((resolve, reject) => {
         // Get all testimonials that have media_file but no media_data
-        db.all(`
+        all(`
             SELECT id, uuid, media_file, media_type 
             FROM testimonials 
             WHERE media_file IS NOT NULL 
@@ -44,6 +29,8 @@ function migrateMediaFiles() {
                 return reject(err);
             }
 
+            // Ensure rows is an array
+            rows = rows || [];
             console.log(`📁 Found ${rows.length} testimonials with media files to migrate`);
 
             if (rows.length === 0) {
@@ -73,7 +60,7 @@ function migrateMediaFiles() {
                     }
 
                     // Update database with media data
-                    db.run(`
+                    run(`
                         UPDATE testimonials 
                         SET media_data = ? 
                         WHERE id = ?
@@ -118,7 +105,8 @@ function migrateMediaFiles() {
 }
 
 // Run migration
-migrateMediaFiles()
+waitForDatabase()
+    .then(() => migrateMediaFiles())
     .then(() => {
         console.log('\n🎉 Migration completed successfully!');
         console.log('🚀 Your media files are now safely stored in the database');
