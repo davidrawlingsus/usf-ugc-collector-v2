@@ -338,6 +338,9 @@
                     // Hide take video button and show submit section
                     takeVideoBtn.style.display = 'none';
                     submitSection.style.display = 'block';
+                    
+                    // Ensure submit button is enabled
+                    document.getElementById('submitBtn').disabled = false;
                 }
             });
         }
@@ -346,9 +349,10 @@
         function retakeVideo() {
             selectedFile = null;
             document.getElementById('filePreview').style.display = 'none';
-            document.getElementById('takeVideoBtn').style.display = 'block';
             document.getElementById('submitSection').style.display = 'none';
             document.getElementById('videoInput').value = '';
+            // Automatically trigger camera/file picker
+            document.getElementById('videoInput').click();
         }
         
         // Initialize file input
@@ -397,6 +401,7 @@
                     document.getElementById('filePreview').style.display = 'none';
                     document.getElementById('takeVideoBtn').style.display = 'block';
                     document.getElementById('submitSection').style.display = 'none';
+                    submitBtn.disabled = false;
                     submitBtn.textContent = 'Submit My Video Testimonial';
                 } else {
                     throw new Error(data.message || 'Submission failed');
@@ -405,6 +410,7 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Sorry, there was an error submitting your testimonial. Please try again.');
+                submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit My Video Testimonial';
             });
         });
