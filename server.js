@@ -15,8 +15,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Use persistent storage paths
-const dataDir = process.env.RAILWAY_VOLUME_MOUNT_PATH ? '/app/data' : './data';
-const uploadsDir = process.env.RAILWAY_VOLWAY_MOUNT_PATH ? '/app/uploads' : './uploads';
+const persistentDir = process.env.RAILWAY_VOLUME_MOUNT_PATH ? '/app' : './';
+const dataDir = path.join(persistentDir, 'data');
+const uploadsDir = path.join(persistentDir, 'uploads');
 
 // Create directories if they don't exist
 if (!fs.existsSync(dataDir)) {
