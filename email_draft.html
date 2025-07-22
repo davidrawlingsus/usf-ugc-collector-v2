@@ -423,10 +423,7 @@
         <button id="toggleMergeFields" class="toggle-btn">Merge Fields</button>
         <div id="mergeFieldsPanel" class="merge-fields-panel" style="display: none;">
             <h3>Test Merge Fields</h3>
-            <div class="field-group">
-                <label for="timeSincePurchase">Time Since Purchase:</label>
-                <input type="text" id="timeSincePurchase" value="6 months" placeholder="e.g., 6 months">
-            </div>
+
             <div class="field-group">
                 <label for="firstName">First Name:</label>
                 <input type="text" id="firstName" value="David" placeholder="e.g., David">
@@ -460,7 +457,7 @@
             </div>
             
             <div class="main-text">
-                It's been <span id="time_since_purchase_placeholder">{{time_since_purchase}}</span> since you got your Super Tough flag from us, and we're curious – how's it performing?
+                It's been a while since you got your Super Tough flag from us, and we're curious – how's it performing?
             </div>
             
             <div class="main-text">
@@ -473,7 +470,7 @@
                 <div class="prize-item">
                     <div class="prize-icon">📊</div>
                     <div class="prize-text">
-                        <strong>Answer Questions:</strong> Get 1 entry per question (up to 10 entries) for a <strong>$1,000 Amazon Gift Card</strong>
+                        <strong>Answer Questions:</strong> Enter for a chance to win a <strong>$1,000 Amazon Gift Card</strong>
                     </div>
                 </div>
                 
@@ -526,8 +523,6 @@
                 <h3 style="color: #1e3a8a; margin-bottom: 15px;">Ready to Share Your Experience?</h3>
                 <p style="margin-bottom: 15px; color: #4a5568;">It only takes 2 minutes to complete the survey and enter the giveaway</p>
                 <a href="https://form.typeform.com/to/p8Y3kpxF#time_since_purchase={{time_since_purchase}}&first_name={{first_name}}&last_name={{last_name}}&email={{email}}" class="cta-button" id="cta1">Yes, I'll Take the Survey!</a>
-                <br>
-                <a href="https://usf-testimonial-collector-production.up.railway.app/video_collector.html?first_name={{first_name}}&last_name={{last_name}}&email={{email}}" style="color: #1e3a8a; text-decoration: underline; font-size: 14px; margin-top: 10px; display: inline-block;" id="cta2">I prefer to record a video testimonial</a>
             </div>
             
             <div class="time-sensitive">
@@ -581,7 +576,6 @@
             
             // Apply merge fields
             applyBtn.addEventListener('click', function() {
-                const timeSincePurchase = document.getElementById('timeSincePurchase').value;
                 const firstName = document.getElementById('firstName').value;
                 const lastName = document.getElementById('lastName').value;
                 const email = document.getElementById('email').value;
@@ -589,14 +583,12 @@
                 // Update placeholders in email content
                 document.getElementById('first_name_placeholder').textContent = firstName;
                 document.getElementById('greeting_first_name_placeholder').textContent = firstName;
-                document.getElementById('time_since_purchase_placeholder').textContent = timeSincePurchase;
                 
                 // Update CTA URLs with merge fields
                 const baseUrl = 'https://form.typeform.com/to/p8Y3kpxF#';
-                const params = `time_since_purchase=${encodeURIComponent(timeSincePurchase)}&first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`;
+                const params = `first_name=${encodeURIComponent(firstName)}&last_name=${encodeURIComponent(lastName)}&email=${encodeURIComponent(email)}`;
                 
                 document.getElementById('cta1').href = baseUrl + params;
-                document.getElementById('cta2').href = baseUrl + params;
                 
                 // Show success message
                 alert('Merge fields applied! The email now shows personalized content and the CTA buttons link to the Typeform with your data.');
