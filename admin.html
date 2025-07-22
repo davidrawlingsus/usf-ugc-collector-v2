@@ -596,6 +596,19 @@
                         <option value="storms">Storms</option>
                     </select>
                 </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Reason for Flying</label>
+                    <select class="filter-select" id="reasonForFlyingFilter">
+                        <option value="">All Reasons</option>
+                        <option value="patriotism">Patriotism</option>
+                        <option value="decorative">Decorative</option>
+                        <option value="business">Business</option>
+                        <option value="sports">Sports</option>
+                        <option value="military">Military</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
             </div>
             
             <div class="filter-actions">
@@ -732,6 +745,7 @@
             const useCase = document.getElementById('useCaseFilter').value;
             const weather = document.getElementById('weatherFilter').value;
             const extremeConditions = document.getElementById('extremeConditionsFilter').value;
+            const reasonForFlying = document.getElementById('reasonForFlyingFilter').value;
             
             // Apply filters
             filteredTestimonials = allTestimonials.filter(testimonial => {
@@ -757,11 +771,15 @@
                     matches = false;
                 }
                 
+                if (reasonForFlying && testimonial.reason_for_flying !== reasonForFlying) {
+                    matches = false;
+                }
+                
                 return matches;
             });
             
             // Update active filters display
-            updateActiveFilters(mediaType, currentFlight, useCase, weather, extremeConditions);
+            updateActiveFilters(mediaType, currentFlight, useCase, weather, extremeConditions, reasonForFlying);
             
             // Display filtered testimonials
             displayTestimonials(filteredTestimonials);
@@ -773,6 +791,7 @@
             document.getElementById('useCaseFilter').value = '';
             document.getElementById('weatherFilter').value = '';
             document.getElementById('extremeConditionsFilter').value = '';
+            document.getElementById('reasonForFlyingFilter').value = '';
             
             document.getElementById('activeFilters').innerHTML = '';
             
@@ -780,7 +799,7 @@
             displayTestimonials(allTestimonials);
         }
         
-        function updateActiveFilters(mediaType, currentFlight, useCase, weather, extremeConditions) {
+        function updateActiveFilters(mediaType, currentFlight, useCase, weather, extremeConditions, reasonForFlying) {
             const activeFiltersContainer = document.getElementById('activeFilters');
             activeFiltersContainer.innerHTML = '';
             
@@ -789,7 +808,8 @@
                 { key: 'currentFlight', value: currentFlight, label: 'Current Flight' },
                 { key: 'useCase', value: useCase, label: 'Use Case' },
                 { key: 'weather', value: weather, label: 'Weather' },
-                { key: 'extremeConditions', value: extremeConditions, label: 'Extreme Conditions' }
+                { key: 'extremeConditions', value: extremeConditions, label: 'Extreme Conditions' },
+                { key: 'reasonForFlying', value: reasonForFlying, label: 'Reason for Flying' }
             ];
             
             filters.forEach(filter => {
@@ -811,7 +831,8 @@
                 'currentFlight': 'currentFlightFilter',
                 'useCase': 'useCaseFilter',
                 'weather': 'weatherFilter',
-                'extremeConditions': 'extremeConditionsFilter'
+                'extremeConditions': 'extremeConditionsFilter',
+                'reasonForFlying': 'reasonForFlyingFilter'
             };
             
             const filterId = filterMap[filterKey];
@@ -910,6 +931,7 @@
                 if (testimonial.use_case) meta.push(`Use case: ${testimonial.use_case}`);
                 if (testimonial.weather_type) meta.push(`Weather: ${testimonial.weather_type}`);
                 if (testimonial.extreme_conditions) meta.push(`Extreme conditions: ${testimonial.extreme_conditions}`);
+                if (testimonial.reason_for_flying) meta.push(`Reason for flying: ${testimonial.reason_for_flying}`);
                 
                 if (meta.length > 0) {
                     metaHtml = `<div class="testimonial-meta">${meta.map(tag => `<span class="meta-tag">${tag}</span>`).join('')}</div>`;

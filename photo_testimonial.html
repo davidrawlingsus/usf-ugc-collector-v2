@@ -326,6 +326,7 @@
             const useCase = getUrlParameter('use_case');
             const weatherType = getUrlParameter('weather_type');
             const extremeConditions = getUrlParameter('extreme_conditions');
+            const reasonForFlying = getUrlParameter('reason_for_flying');
             
             // Combine first and last name
             if (firstName || lastName) {
@@ -347,7 +348,8 @@
                 past_flight_time: pastFlightTime,
                 use_case: useCase,
                 weather_type: weatherType,
-                extreme_conditions: extremeConditions
+                extreme_conditions: extremeConditions,
+                reason_for_flying: reasonForFlying
             };
         });
         

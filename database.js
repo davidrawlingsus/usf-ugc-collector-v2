@@ -84,6 +84,7 @@ function initializeSQLite() {
             use_case TEXT,
             weather_type TEXT,
             extreme_conditions TEXT,
+            reason_for_flying TEXT,
             testimonial_type TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`);
@@ -136,6 +137,7 @@ function initializePostgres(pool) {
             use_case TEXT,
             weather_type TEXT,
             extreme_conditions TEXT,
+            reason_for_flying TEXT,
             testimonial_type TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )

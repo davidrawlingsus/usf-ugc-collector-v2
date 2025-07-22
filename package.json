@@ -10,6 +10,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "migrate": "node migrate-media.js",
+    "migrate-reason": "node migrate-reason-for-flying.js",
     "test-media": "node test-media.js"
   },
   "dependencies": {

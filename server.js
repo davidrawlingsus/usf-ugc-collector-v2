@@ -129,6 +129,14 @@ app.get('/email_draft.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'email_draft.html'));
 });
 
+app.get('/terms.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'terms.html'));
+});
+
+app.get('/terms', (req, res) => {
+    res.sendFile(path.join(__dirname, 'terms.html'));
+});
+
 app.get('/email-draft', (req, res) => {
     const fs = require('fs');
     const path = require('path');
@@ -339,7 +347,8 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
             past_flight_time,
             use_case,
             weather_type,
-            extreme_conditions
+            extreme_conditions,
+            reason_for_flying
         } = req.body;
 
         const uuid = uuidv4();
@@ -351,14 +360,14 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
             INSERT INTO testimonials (
                 uuid, name, email, media_file, media_type, media_data,
                 first_name, last_name, current_flight_time, past_flight_time,
-                use_case, weather_type, extreme_conditions, testimonial_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                use_case, weather_type, extreme_conditions, reason_for_flying, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         stmt.run([
             uuid, name, email, mediaFile, mediaType, mediaData,
             first_name, last_name, current_flight_time, past_flight_time,
-            use_case, weather_type, extreme_conditions, 'video'
+            use_case, weather_type, extreme_conditions, reason_for_flying, 'video'
         ], (err) => {
             if (err) {
                 console.error('Error inserting video testimonial:', err);
@@ -393,7 +402,8 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
             past_flight_time,
             use_case,
             weather_type,
-            extreme_conditions
+            extreme_conditions,
+            reason_for_flying
         } = req.body;
 
         const uuid = uuidv4();
@@ -415,14 +425,14 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
             INSERT INTO testimonials (
                 uuid, name, email, testimonial_text, media_file, media_type, media_data,
                 first_name, last_name, current_flight_time, past_flight_time,
-                use_case, weather_type, extreme_conditions, testimonial_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                use_case, weather_type, extreme_conditions, reason_for_flying, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         stmt.run([
             uuid, name, email, testimonial, mediaFile, mediaType, mediaData,
             first_name, last_name, current_flight_time, past_flight_time,
-            use_case, weather_type, extreme_conditions, 'photo'
+            use_case, weather_type, extreme_conditions, reason_for_flying, 'photo'
         ], (err) => {
             if (err) {
                 console.error('Error inserting photo testimonial:', err);
@@ -457,7 +467,8 @@ app.post('/submit-written-testimonial', (req, res) => {
             past_flight_time,
             use_case,
             weather_type,
-            extreme_conditions
+            extreme_conditions,
+            reason_for_flying
         } = req.body;
 
         const uuid = uuidv4();
@@ -466,14 +477,14 @@ app.post('/submit-written-testimonial', (req, res) => {
             INSERT INTO testimonials (
                 uuid, name, email, testimonial_text, first_name, last_name,
                 current_flight_time, past_flight_time, use_case, weather_type,
-                extreme_conditions, testimonial_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                extreme_conditions, reason_for_flying, testimonial_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         stmt.run([
             uuid, name, email, testimonial,
             first_name, last_name, current_flight_time, past_flight_time,
-            use_case, weather_type, extreme_conditions, 'written'
+            use_case, weather_type, extreme_conditions, reason_for_flying, 'written'
         ], (err) => {
             if (err) {
                 console.error('Error inserting written testimonial:', err);
