@@ -96,6 +96,13 @@ function initializeSQLite() {
             }
         });
         
+        // Add reason_for_flying column if it doesn't exist
+        db.run(`ALTER TABLE testimonials ADD COLUMN reason_for_flying TEXT`, (err) => {
+            if (err && !err.message.includes('duplicate column name')) {
+                console.error('Error adding reason_for_flying column:', err);
+            }
+        });
+        
         // Create assets table for frontend interface assets
         db.run(`CREATE TABLE IF NOT EXISTS assets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

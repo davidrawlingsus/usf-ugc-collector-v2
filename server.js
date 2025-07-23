@@ -77,16 +77,16 @@ const upload = multer({
 
 // Database initialization is handled in database.js
 
-// Middleware to ensure database is ready (commented out for debugging)
-// app.use(async (req, res, next) => {
-//     try {
-//         await initPromise;
-//         next();
-//     } catch (error) {
-//         console.error('Database not ready:', error);
-//         res.status(503).json({ error: 'Database not ready' });
-//     }
-// });
+// Middleware to ensure database is ready
+app.use(async (req, res, next) => {
+    try {
+        await initPromise;
+        next();
+    } catch (error) {
+        console.error('Database not ready:', error);
+        res.status(503).json({ error: 'Database not ready' });
+    }
+});
 
 // Routes
 app.get('/', (req, res) => {
@@ -338,6 +338,10 @@ app.delete('/api/assets/:uuid', (req, res) => {
 // Handle video testimonial submission
 app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
     try {
+        console.log('📹 Video testimonial submission received');
+        console.log('📋 Request body:', req.body);
+        console.log('📁 File:', req.file ? req.file.originalname : 'No file');
+        
         const {
             name,
             email,
@@ -356,6 +360,14 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
         const mediaType = req.file ? req.file.mimetype : null;
         const mediaData = req.file ? req.file.buffer : null;
 
+        console.log('💾 Preparing to insert video testimonial into database');
+        console.log('🔑 UUID:', uuid);
+        console.log('📝 Data:', {
+            name, email, mediaFile, mediaType,
+            first_name, last_name, current_flight_time, past_flight_time,
+            use_case, weather_type, extreme_conditions, reason_for_flying
+        });
+        
         const stmt = prepare(`
             INSERT INTO testimonials (
                 uuid, name, email, media_file, media_type, media_data,
@@ -370,14 +382,20 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
             use_case, weather_type, extreme_conditions, reason_for_flying, 'video'
         ], (err) => {
             if (err) {
-                console.error('Error inserting video testimonial:', err);
+                console.error('❌ Error inserting video testimonial:', err);
+                res.status(500).json({
+                    success: false,
+                    message: 'Error saving testimonial to database'
+                });
+                return;
             }
-        });
-
-        res.json({
-            success: true,
-            message: 'Video testimonial submitted successfully!',
-            uuid: uuid
+            
+            console.log('✅ Video testimonial saved successfully');
+            res.json({
+                success: true,
+                message: 'Video testimonial submitted successfully!',
+                uuid: uuid
+            });
         });
 
     } catch (error) {
@@ -392,6 +410,10 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
 // Handle photo testimonial submission
 app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) => {
     try {
+        console.log('📸 Photo testimonial submission received');
+        console.log('📋 Request body:', req.body);
+        console.log('📁 File:', req.file ? req.file.originalname : 'No file');
+        
         const {
             name,
             email,
@@ -421,6 +443,14 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
             }
         }
 
+        console.log('💾 Preparing to insert photo testimonial into database');
+        console.log('🔑 UUID:', uuid);
+        console.log('📝 Data:', {
+            name, email, testimonial, mediaFile, mediaType,
+            first_name, last_name, current_flight_time, past_flight_time,
+            use_case, weather_type, extreme_conditions, reason_for_flying
+        });
+        
         const stmt = prepare(`
             INSERT INTO testimonials (
                 uuid, name, email, testimonial_text, media_file, media_type, media_data,
@@ -435,14 +465,20 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
             use_case, weather_type, extreme_conditions, reason_for_flying, 'photo'
         ], (err) => {
             if (err) {
-                console.error('Error inserting photo testimonial:', err);
+                console.error('❌ Error inserting photo testimonial:', err);
+                res.status(500).json({
+                    success: false,
+                    message: 'Error saving testimonial to database'
+                });
+                return;
             }
-        });
-
-        res.json({
-            success: true,
-            message: 'Photo testimonial submitted successfully!',
-            uuid: uuid
+            
+            console.log('✅ Photo testimonial saved successfully');
+            res.json({
+                success: true,
+                message: 'Photo testimonial submitted successfully!',
+                uuid: uuid
+            });
         });
 
     } catch (error) {
@@ -488,13 +524,18 @@ app.post('/submit-written-testimonial', (req, res) => {
         ], (err) => {
             if (err) {
                 console.error('Error inserting written testimonial:', err);
+                res.status(500).json({
+                    success: false,
+                    message: 'Error saving testimonial to database'
+                });
+                return;
             }
-        });
-
-        res.json({
-            success: true,
-            message: 'Written testimonial submitted successfully!',
-            uuid: uuid
+            
+            res.json({
+                success: true,
+                message: 'Written testimonial submitted successfully!',
+                uuid: uuid
+            });
         });
 
     } catch (error) {
