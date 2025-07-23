@@ -414,8 +414,9 @@
             // Add URL parameters (but don't override form fields)
             if (window.urlParams) {
                 Object.keys(window.urlParams).forEach(key => {
-                    if (window.urlParams[key] && key !== 'email' && key !== 'name') {
-                        formData.append(key, window.urlParams[key]);
+                    if (key !== 'email' && key !== 'name') {
+                        // Always send the parameter, even if it's empty
+                        formData.append(key, window.urlParams[key] || '');
                     }
                 });
             }
