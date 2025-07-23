@@ -272,8 +272,9 @@
             // Add URL parameters
             if (window.urlParams) {
                 Object.keys(window.urlParams).forEach(key => {
-                    // Always send the parameter, even if it's empty
-                    formData[key] = window.urlParams[key] || '';
+                    if (window.urlParams[key]) {
+                        formData[key] = window.urlParams[key];
+                    }
                 });
             }
             

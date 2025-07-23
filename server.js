@@ -341,7 +341,6 @@ app.post('/submit-video-testimonial', upload.single('video'), (req, res) => {
         console.log('📹 Video testimonial submission received');
         console.log('📋 Request body:', req.body);
         console.log('📁 File:', req.file ? req.file.originalname : 'No file');
-        
         const {
             name,
             email,
@@ -413,7 +412,6 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
         console.log('📸 Photo testimonial submission received');
         console.log('📋 Request body:', req.body);
         console.log('📁 File:', req.file ? req.file.originalname : 'No file');
-        
         const {
             name,
             email,
@@ -493,6 +491,8 @@ app.post('/submit-photo-testimonial', upload.single('photo'), async (req, res) =
 // Handle written testimonial submission
 app.post('/submit-written-testimonial', (req, res) => {
     try {
+        console.log('✍️ Written testimonial submission received');
+        console.log('📋 Request body:', req.body);
         const {
             name,
             email,
@@ -509,6 +509,14 @@ app.post('/submit-written-testimonial', (req, res) => {
 
         const uuid = uuidv4();
 
+        console.log('💾 Preparing to insert written testimonial into database');
+        console.log('🔑 UUID:', uuid);
+        console.log('📝 Data:', {
+            name, email, testimonial,
+            first_name, last_name, current_flight_time, past_flight_time,
+            use_case, weather_type, extreme_conditions, reason_for_flying
+        });
+        
         const stmt = prepare(`
             INSERT INTO testimonials (
                 uuid, name, email, testimonial_text, first_name, last_name,
@@ -523,7 +531,7 @@ app.post('/submit-written-testimonial', (req, res) => {
             use_case, weather_type, extreme_conditions, reason_for_flying, 'written'
         ], (err) => {
             if (err) {
-                console.error('Error inserting written testimonial:', err);
+                console.error('❌ Error inserting written testimonial:', err);
                 res.status(500).json({
                     success: false,
                     message: 'Error saving testimonial to database'
@@ -531,6 +539,7 @@ app.post('/submit-written-testimonial', (req, res) => {
                 return;
             }
             
+            console.log('✅ Written testimonial saved successfully');
             res.json({
                 success: true,
                 message: 'Written testimonial submitted successfully!',

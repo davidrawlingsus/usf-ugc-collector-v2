@@ -96,13 +96,6 @@ function initializeSQLite() {
             }
         });
         
-        // Add reason_for_flying column if it doesn't exist
-        db.run(`ALTER TABLE testimonials ADD COLUMN reason_for_flying TEXT`, (err) => {
-            if (err && !err.message.includes('duplicate column name')) {
-                console.error('Error adding reason_for_flying column:', err);
-            }
-        });
-        
         // Create assets table for frontend interface assets
         db.run(`CREATE TABLE IF NOT EXISTS assets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -172,6 +165,15 @@ function initializePostgres(pool) {
             console.error('Error creating PostgreSQL testimonials table:', err);
         } else {
             console.log('✅ PostgreSQL testimonials table created/verified');
+            
+            // Add reason_for_flying column if it doesn't exist
+            pool.query(`ALTER TABLE testimonials ADD COLUMN IF NOT EXISTS reason_for_flying TEXT`, (err) => {
+                if (err) {
+                    console.error('Error adding reason_for_flying column:', err);
+                } else {
+                    console.log('✅ PostgreSQL reason_for_flying column verified');
+                }
+            });
         }
     });
     

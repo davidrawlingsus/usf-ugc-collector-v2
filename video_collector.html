@@ -408,9 +408,8 @@
             // Add URL parameters (excluding email to avoid conflicts)
             if (window.urlParams) {
                 Object.keys(window.urlParams).forEach(key => {
-                    if (key !== 'email') {
-                        // Always send the parameter, even if it's empty
-                        formData.append(key, window.urlParams[key] || '');
+                    if (window.urlParams[key] && key !== 'email') {
+                        formData.append(key, window.urlParams[key]);
                     }
                 });
             }
